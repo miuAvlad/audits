@@ -191,8 +191,7 @@ function testVulnerability3() public{
 **Description:** Functions stake and withdraw from StakingManager.sol contract use `StakingAccountant::_getExchangeRatio` function which uses `validatorManager.totalRewards()` and `validatorManager.totalSlashing()` to calculate the totalHype which then is used for the ratio.
 <details>
 <summary> _getExchangeRatio </summary>
-```
-    ...
+```javascript
     uint256 rewardsAmount = validatorManager.totalRewards();
     uint256 slashingAmount = validatorManager.totalSlashing();
     uint256 totalHYPE = totalStaked + rewardsAmount - totalClaimed - slashingAmount;
@@ -204,7 +203,7 @@ Contract OracleManager.sol modifies totalRewards and totalSlashing from Validato
 <details>
 <summary> generatePerformance </summary>
 
-```
+```javascript
      // Update validator performance in ValidatorManager
         validatorManager.updateValidatorPerformance(
             validator, avgBalance, avgUptimeScore, avgSpeedScore, avgIntegrityScore, avgSelfStakeScore
