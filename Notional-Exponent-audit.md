@@ -205,5 +205,3 @@ Move approvals into the constructor of CurveConvex2Token so that _initialApprove
 
 
 
-### PS
-  This finding was deemd Valid but informational in Sherlock Contest even though it casues permanent DOS and loss of funds
