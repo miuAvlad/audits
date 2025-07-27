@@ -2,10 +2,10 @@
 
 Contract CurveConvex2Token inherits in order:
 
-AbstractSingleSidedLP
-RewardManagerMixin
-AbstractYieldStrategy
-Initializable
+1. AbstractSingleSidedLP
+2. RewardManagerMixin
+3. AbstractYieldStrategy
+4. Initializable
 
 The Initializable base contract's constructor sets the initialized private variable to true which permanently disables the public function initialize(bytes). As consequence the _initialApproveTokens() is never called to set all the ERC-20 allowances that joinPoolAndStake() needs. Because _initialize is never invoked, no approvals are ever granted effectively blocking the core deposit/stake flow.
 ```javascript
