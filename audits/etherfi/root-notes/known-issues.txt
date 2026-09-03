@@ -1,0 +1,705 @@
+# ether.fi — index consolidat al finding-urilor din audituri
+
+**Generat:** 31 iulie 2026  
+**Pagina de audituri:** https://etherfi.gitbook.io/etherfi/security/security-and-risks/audits  
+**Directorul oficial al rapoartelor:** https://github.com/etherfi-protocol/smart-contracts/tree/master/audits
+
+## Domeniu și convenții
+
+Acest fișier reprezintă toate cele **30 de artefacte** publicate în directorul oficial de audituri ether.fi la data generării. Pentru fiecare raport sunt centralizate titlul finding-ului, severitatea și statusul, acolo unde acestea au putut fi extrase din artefactul public. Titlurile sunt păstrate în limba raportului pentru a putea fi căutate exact în PDF/Markdown.
+
+- `—` înseamnă că raportul nu indică explicit informația sau că ea nu a putut fi normalizată sigur.
+- Findings repetate în rapoarte ulterioare sunt păstrate, deoarece fiecare fișier este un artefact de audit distinct.
+- Nu sunt reproduse integral descrierile, scenariile de atac și recomandările auditorilor; acesta este un index complet al finding-urilor identificabile, nu o copie a rapoartelor.
+- Pentru trei artefacte, forma publică nu a permis extragerea titlurilor detaliate în mediul curent: imaginea CertiK din 2023, PDF-ul Paladin din 2024 și PDF-ul Certora 26Q2 din 2026. Acestea sunt marcate explicit, fără a inventa finding-uri.
+
+## Inventar
+
+| # | Dată | Auditor | Raport | Format | Finding-uri indexate |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 2023-02-25 | CertiK | Executive summary | PNG | 4 finding-uri; titluri neextractibile |
+| 2 | 2023-05-16 | Omniscia | Protocol audit | PDF | 114 |
+| 3 | 2023-07-05 | Nethermind | Smart-contract audit | PDF | 43 |
+| 4 | 2023-10-26 | Solidified | Smart-contract audit | PDF | 25 |
+| 5 | 2023-12-20 | Hats Finance | Competitive audit | Markdown | 13 grupuri/listări |
+| 6 | 2024-01-11 | Zellic | Liquid / Liquifier review | PDF | 9 |
+| 7 | 2024-03-13 | Zellic | Validator and withdrawal flows | PDF | 11 |
+| 8 | 2024-04-08 | Decurity | PR reviews | PDF | 6 |
+| 9 | 2024-06-25 | Halborn | L2 Governance Token | PDF | 3 |
+| 10 | 2024-08-02 | Halborn | EFIP-5 / EFIP-8 | PDF | 3 |
+| 11 | 2024-09-30 | Paladin | OFT Adapter Migration | PDF | titluri neextractibile |
+| 12 | 2024-10-08 | Certora | ether.fi draft audit | PDF | 30 |
+| 13 | 2025-01-16 | Certora | eETH share inflation | PDF | 1 |
+| 14 | 2025-01-23 | Certora | Withdrawal Fee | PDF | 4 security + 12 info + 2 invalidated |
+| 15 | 2025-03-26 | Certora | Instant Withdrawal merge into v2.49 | PDF | 2 |
+| 16 | 2025-03-26 | Certora | v2.49 | PDF | 2 security + 6 info |
+| 17 | 2025-04-12 | Certora | EigenLayer Slashing | PDF | 4 |
+| 18 | 2025-05-07 | Certora | Cumulative Merkle Distributor | PDF | 7 |
+| 19 | 2025-08-01 | Certora | V3.Prelude — Part 1 | PDF | 12 |
+| 20 | 2025-08-01 | Certora | V3.Prelude — Part 2 | PDF | 3 |
+| 21 | 2025-09-09 | Certora | Pectra Features Upgrade | PDF | 7 |
+| 22 | 2025-10-06 | Certora | Pectra + instant stETH withdrawals + weETH adapter | PDF | 17 |
+| 23 | 2025-10-20 | Certora | weETH Withdrawal Adapter | PDF | 2 |
+| 24 | 2025-11-12 | Certora | Safe Key Gen / Consolidation Role / Restaker bug fix | PDF | 4 |
+| 25 | 2026-01-20 | Certora | Liquid Referrer / KING / Cross-Pod Approval | PDF | 8 |
+| 26 | 2026-01-29 | Certora | Reaudit Core Contracts | PDF | 41 raportate |
+| 27 | 2026-03-05 | Certora | Priority Withdrawal Queue | PDF | 18 |
+| 28 | 2026-06-28 | Certora | 26Q2 Security Upgrade | PDF | titluri neextractibile |
+| 29 | — | Nethermind | NM-0217 Deposit Adapter | Markdown | 3 |
+| 30 | — | Nethermind | NM-0217 Restaking stETH | Markdown | 2 |
+
+## 1. 2023-02-25 — CertiK: Executive summary
+**Artefact oficial:** `2023.02.25 - CertiK.png`
+
+> Artefactul public este o imagine de sumar. Sunt vizibile distribuția și statusurile agregate, dar nu titlurile individuale ale finding-urilor.
+
+| Severitate | Total | Resolved | Acknowledged |
+| --- | --- | --- | --- |
+| Critical | 0 | 0 | 0 |
+| Major | 1 | 0 | 1 |
+| Medium | 1 | 1 | 0 |
+| Minor | 2 | 1 | 1 |
+| Total | 4 | 2 | 2 |
+
+## 2. 2023-05-16 — Omniscia: Protocol audit
+**Artefact oficial:** `2023.05.16 - Omniscia.pdf`
+
+**Rezumat raportat:** 114 observații: 6 Unknown, 73 Informational, 22 Minor, 2 Medium și 11 Major. Auditorul le grupează în 27 rezultate de analiză statică, 40 observații manuale de securitate/comportament și 47 observații de stil/optimizare.
+
+### 2.1 Analiză statică
+| ID | Finding |
+| --- | --- |
+| AMR-01S | Inexistent Event Emissions |
+| AMR-02S | Inexistent Visibility Specifier |
+| AMR-03S | Literal Equality of bool Variables |
+| AMR-04S | Inexistent Sanitization of Input Addresses |
+| BNF-01S | Inexistent Visibility Specifier |
+| BNF-02S | Inexistent Sanitization of Input Address |
+| CRP-01S | Illegible Numeric Value Representation |
+| CRP-02S | Inexistent Visibility Specifiers |
+| CRP-03S | Inexistent Sanitization of Input Addresses |
+| EAP-01S | Illegible Numeric Value Representations |
+| EAP-02S | Inexistent Sanitization of Input Addresses |
+| EAP-03S | Potential Lock of Native Assets |
+| EAP-04S | Improper Invocations of EIP-20 transfer / transferFrom |
+| EFN-01S | Illegible Numeric Value Representation |
+| EFN-02S | Inexistent Sanitization of Input Address |
+| EFM-01S | Illegible Numeric Value Representations |
+| EFM-02S | Inexistent Visibility Specifier |
+| EFM-03S | Inexistent Sanitization of Input Addresses |
+| NOM-01S | Literal Equality of bool Variable |
+| NOM-02S | Inexistent Sanitization of Input Address |
+| PRM-01S | Inexistent Visibility Specifier |
+| PRM-02S | Inexistent Sanitization of Input Addresses |
+| SMR-01S | Inexistent Visibility Specifier |
+| SME-01S | Inexistent Visibility Specifier |
+| SME-02S | Inexistent Sanitization of Input Addresses |
+| TNF-01S | Inexistent Visibility Specifier |
+| TNF-02S | Inexistent Sanitization of Input Address |
+
+### 2.2 Analiză manuală de securitate și comportament
+| ID | Finding |
+| --- | --- |
+| AMR-01M | Inexplicable Capability of Re-Invocation |
+| AMR-02M | Inexistent Disable of Initializer |
+| AMR-03M | Insufficient Validation of Bid Size |
+| AMR-04M | Improper Entry Clean-Up |
+| AMR-05M | Insufficient Validation of Minimum Bid Amount |
+| BNF-01M | Inexistent Disable of Initializer |
+| BNF-02M | Incorrect Override of Functionality |
+| CRP-01M | Inexistent Disable of Initializer |
+| CRP-02M | Inexistent Slippage Protection |
+| CRP-03M | Inexplicable Deposit Flow |
+| CRP-04M | Unsupported Withdrawal Mechanism |
+| EAP-01M | Improper Accuracy of Point Calculations |
+| EAP-02M | Pure Off-Chain Point Utilization |
+| EAP-03M | Inexistent Prevention of Re-Invocation |
+| EAP-04M | Potentially Redundant Amount Restriction |
+| EAP-05M | Unfair Reset of Deposit Time |
+| EFN-01M | Inexistent Disable of Initializer |
+| EFN-02M | Incorrect Balance Assumption |
+| EFN-03M | Inexistent Sanitization of Exit Timestamp |
+| EFN-04M | Inexistent Caller Validation |
+| EFN-05M | Weak Validation of Node State |
+| EFM-01M | Inexistent Disable of Initializer |
+| EFM-02M | Inexistent Prevention of Duplicate Exit |
+| EFM-03M | Inexistent Sanitization of Non-Exit Penalty Rate |
+| EFM-04M | Inexistent Validation of Node State |
+| EFM-05M | Weak Validation of Node State |
+| NOM-01M | Inexplicable Capability of Re-Invocation |
+| NOM-02M | Incorrect Verification of Whitelist |
+| PRM-01M | Inexplicable Capability of Re-Invocation |
+| PRM-02M | Inexistent Disable of Initializer |
+| PRM-03M | Inexistent Sanitization of Fee Proportion |
+| SMR-01M | Inexistent Disable of Initializer |
+| SMR-02M | Inexplicable Data Types |
+| SMR-03M | Inexistent Sanitization of Valid Type |
+| SMR-04M | Improper Score Maintenance Mechanisms |
+| SME-01M | Inexplicable Capability of Re-Invocation |
+| SME-02M | Inexistent Disable of Initializer |
+| SME-03M | Incorrect Data Entry |
+| SME-04M | ETH2.0 Validator Front-Run Withdrawal Credential Attack |
+| TNF-01M | Inexistent Disable of Initializer |
+
+### 2.3 Stil, gas și mentenanță
+| ID | Finding |
+| --- | --- |
+| AMR-01C | Inefficient Optimization of Iterator Increment |
+| AMR-02C | Inefficient mapping Lookups |
+| AMR-03C | Loop Iterator Optimization |
+| AMR-04C | Non-Standard Gap Size |
+| AMR-05C | Redundant Duplicate Application of Access Control |
+| BNF-01C | Non-Standard Gap Size |
+| CRP-01C | Duplicate Invocation of Getter |
+| CRP-02C | Inexistent Gap Declaration |
+| EAP-01C | Code Readability Enhancement |
+| EAP-02C | Generic Typographic Mistakes |
+| EAP-03C | Inefficient Contract TVL Calculation |
+| EAP-04C | Inefficient mapping Lookups |
+| EAP-05C | Insufficient Documentation of Literal |
+| EAP-06C | Redundant Data Point |
+| EAP-07C | Redundant Duplicate Data Points |
+| EAP-08C | Redundant Parenthesis Statements |
+| EAP-09C | Variable Mutability Specifiers (Immutable) |
+| EFN-01C | Generic Typographic Mistakes |
+| EFN-02C | Ineffectual Conditional Check |
+| EFN-03C | Ineffectual Usage of Safe Arithmetics |
+| EFN-04C | Inefficient Calculation of Rewards |
+| EFN-05C | Inefficient Case Handling |
+| EFN-06C | Inefficient Loop Iterator Data Type |
+| EFN-07C | Loop Iterator Optimizations |
+| EFN-08C | Optimization of Penalty Calculation |
+| EFN-09C | Potentially Incorrect Constants |
+| EFN-10C | Redundant Parenthesis Statements |
+| EFN-11C | Repetitive Value Literals |
+| EFM-01C | Inexistent Error Messages |
+| EFM-02C | Loop Iterator Optimizations |
+| EFM-03C | Non-Standard Gap Size |
+| EFM-04C | Redundant Parenthesis Statements |
+| EFM-05C | Repetitive Value Literal |
+| NOM-01C | Inefficient mapping Lookups |
+| PRM-01C | Non-Standard Gap Size |
+| PRM-02C | Optimization of Code Block |
+| PRM-03C | Repetitive Invocation of Getter Function |
+| PRM-04C | Repetitive Value Literal |
+| SMR-01C | Generic Typographic Mistake |
+| SMR-02C | Ineffectual Usage of Safe Arithmetics |
+| SMR-03C | Non-Standard Gap Size |
+| SMR-04C | Redundant Storage Reads |
+| SME-01C | Inexistent Error Message |
+| SME-02C | Loop Iterator Optimizations |
+| SME-03C | Non-Standard Gap Size |
+| TNF-01C | Non-Standard Gap Size |
+| TYR-01C | Redundant Evaluation of Balance |
+
+## 3. 2023-07-05 — Nethermind: Smart-contract audit
+**Artefact oficial:** `2023.07.05 - Nethermind.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| 1 | Critical | Fixed | The LiquidityPool.withdraw(...) function can be called for any address |
+| 2 | High | Mitigated | Deposit may be front-run with arbitrary withdrawal credentials |
+| 3 | High | Fixed | Owner can withdraw users’ assets if totalFeesAccumulated is not reset after withdrawing fees |
+| 4 | High | Fixed | Participants may refuse ETH transfer to control the withdrawal processes |
+| 5 | High | Fixed | Protocol rewards may be claimed after the node exit |
+| 6 | High | Fixed | Staked funds are frozen after slashing |
+| 7 | High | Fixed | Treasury and ProtocolRevenueManager owner can not withdraw eETH tokens |
+| 8 | Medium | Mitigated | Centralization risks |
+| 9 | Medium | Fixed | Check in LiquidityPool.deposit(...) is incorrect |
+| 10 | Medium | Acknowledged | Incorrect calculation in convertEapPoints(...) |
+| 11 | Medium | Fixed | Incorrect shares calculation in deposit(...) |
+| 12 | Medium | Mitigated | Marking node EXITED before receiving funds may lead to locked funds |
+| 13 | Medium | Fixed | Points diluting mechanism does not disincentivize topUp with huge amounts |
+| 14 | Medium | Mitigated | TNFT may be worth less than 30 ETH (Out of scope) |
+| 15 | Medium | Mitigated | B-NFT holder unfairly penalized when T-NFT holder requests exit |
+| 16 | Medium | Fixed | Users can get more value than they should when withdrawing |
+| 17 | Medium | Fixed | _processNodeExit never distributes protocol reward to validator node |
+| 18 | Medium | Fixed | partialWithdrawals can be executed after node exited |
+| 19 | Low | Fixed | BurnFee never initialized or set |
+| 20 | Low | Fixed | markBeingSlahsed does not check node phase |
+| 21 | Low | Acknowledged | Incorrect deposit address |
+| 22 | Low | Fixed | Partial withdrawal differs from batch partial withdrawal |
+| 23 | Low | Fixed | First-depositor price manipulation in LiquidityPool |
+| 24 | Low | Mitigated | getStakingRewardsPayouts may confuse users |
+| 25 | Low | Fixed | Operator incentivized to delay exit |
+| 26 | Informational | Fixed | Inconsistent access control in getFullWithdrawalPayouts |
+| 27 | Informational | Fixed | Check if returnAmount is not zero |
+| 28 | Informational | Fixed | EETH approval race condition |
+| 29 | Informational | Fixed | Minimum deposit differs between wrapEth and wrapEthBatch |
+| 30 | Informational | Fixed | Misleading error message |
+| 31 | Informational | Fixed | Usage of __gap |
+| 32 | Best Practice | Acknowledged | Circular dependency and lack of cohesion |
+| 33 | Best Practice | Acknowledged | Lack of events for relevant operations |
+| 34 | Best Practice | Fixed | Local variable tokenData shadows existing state variable |
+| 35 | Best Practice | Fixed | Local variable tokenData shadows existing state variable (second occurrence) |
+| 36 | Best Practice | Fixed | No explicit return in _updateAllTimeHighDepositOf(...) |
+| 37 | Best Practice | Fixed | Placeholder in struct for future usage |
+| 38 | Best Practice | Fixed | Redundant condition |
+| 39 | Best Practice | Fixed | Some functions can be external |
+| 40 | Best Practice | Fixed | Unnecessary update of prevPointsAccrualTimestamp in _applyUnwrapPenalty |
+| 41 | Best Practice | Partially fixed | Unused code |
+| 42 | Best Practice | Acknowledged | Unused state variable in MembershipManager |
+| 43 | Best Practice | Acknowledged | Use of two-step ownership transition |
+
+## 4. 2023-10-26 — Solidified: Smart-contract audit
+**Artefact oficial:** `2023.10.26 - Solidified.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| 1 | Critical | Resolved | Anyone can call StakingManager.batchCancelDepositAsBnftHolder to cancel a deposit |
+| 2 | Critical | Resolved | A BNFT Holder can cancel a deposit by bypassing the liquidity pool and receive the entire stake |
+| 3 | Critical | Resolved | Funds of recycled EtherFiNodes can be stolen |
+| 4 | Major | Resolved | EtherFiOracle will not be able to reach consensus under some circumstances |
+| 5 | Major | Resolved | The liquidity pool owner can redeem fully withdrawn, or slashed TNFTs for 30 ether |
+| 6 | Minor | Resolved | Dust of eETH could be stuck in the WithdrawRequestNFT contract |
+| 7 | Minor | Resolved | Reliance on hard-coded gas number for ETH transfers can be problematic |
+| 8 | Minor | Acknowledged | LiquidityPool’s TNFT rewards and principal could be redirected to the treasury |
+| 9 | Minor | Resolved | Partial withdrawals can be avoided by malicious users |
+| 10 | Minor | Resolved | Error in WithdrawRequestNFT.requestWithdraw validation logic |
+| 11 | Minor | Resolved | EtherFiOracle.numActiveCommitteeMembers can return wrong values |
+| 12 | Minor | Resolved | Any MembershipManager admin could rebase using an arbitrary amount of accrued rewards |
+| 13 | Minor | Resolved | MembershipManager.addNewTier uses the wrong length |
+| 14 | Minor | Resolved | MembershipManager functions use LiquidityPool’s eETH deposit flow |
+| 15 | Minor | Resolved | Misleading SourceOfFunds emitted in events |
+| 16 | Minor | Resolved | numPendingDeposits is not updated on unsuccessful deposits |
+| 17 | Minor | Partially resolved | Centralization Issues |
+| 18 | Minor | Resolved | Non exit penalty daily rate cannot be updated to a value greater than 1% |
+| 19 | Minor | Resolved | EtherFiNodesManager does not verify that staking rewards split sums up to 100% |
+| 20 | Minor | Resolved | Burn fees from MembershipManager.unwrapForEEthAndBurn stay in MembershipManager decreasing rewards for EtherFan holders |
+| 21 | Note | Acknowledged | console.sol is imported in various files |
+| 22 | Note | Resolved | Hardcoded values |
+| 23 | Note | Resolved | LiquidityPool.requestWithdraw checks against wrong upper limit |
+| 24 | Note | Resolved | Incorrect report finalization check in EtherFiOracle.verifyReport |
+| 25 | Note | Resolved | Any LiquidityPool admin could increase ethAmountLockedForWithdrawal |
+
+## 5. 2023-12-20 — Hats Finance: Competitive audit registry
+**Artefact oficial:** `2023.12.20 - Hats Finance.md`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Medium | — | Reentrancy when requesting a withdraw in liquidity pool |
+| — | Low | — | Beneficiaries of a slashed validator can still withdraw node rewards |
+| — | Low | — | Invalidating withdraw request NFT makes eETH stuck |
+| — | Low | — | Griefing and migration prevention in NodeOperatorManager |
+| — | Low | — | Adding a new tier prevents rebasing |
+| — | Low | — | Immediate minting of all MembershipNFTs by malicious actor |
+| — | Low | — | Various low severity issues |
+| — | Low | — | DoS risk by donating to LiquidityProvider.sol |
+| — | Low | — | pause() unusable in EtherFiAdmin.sol |
+| — | Low | — | Solidity 0.8.13 vulnerabilities |
+| — | Low | — | PausableUpgradeable not initialized in EtherFiOracle.sol |
+| — | Low | — | Treasury ownership renunciation makes unusable |
+| — | Low | — | Auction variables changeable during ongoing auctions |
+| — | Low | — | Missing zero-address checks |
+
+## 6. 2024-01-11 — Zellic: Liquid / Liquifier review
+**Artefact oficial:** `2024.01.11 - Zellic.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | High | Fixed; MEV subcase acknowledged | Incorrect calculation effectively removes fee |
+| — | High | Fixed | Front-runners can cancel any permit deposit |
+| — | High | Fixed | Completing unqueued withdrawal loses and locks funds |
+| — | Medium | Fixed | More than one strategy per token breaks accounting |
+| — | Medium | Acknowledged | Admins can steal funds by self-sandwiching swaps |
+| — | Low | Fixed | Accumulated fee logic can prevent withdrawals |
+| — | Low | Made irrelevant by redesign | Separate ERC-20 deposit and queued withdrawal whitelists |
+| — | Informational | Fixed | Deposit is not compatible with noncompliant ERC20s |
+| — | Informational | Fixed | Balance-offset check uses requested amount |
+
+## 7. 2024-03-13 — Zellic: Validator and withdrawal flows
+**Artefact oficial:** `2024.03.13 - Zellic.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Critical | Fixed | Repeated validator IDs could be passed in batchRevertExitRequest |
+| — | Critical | Fixed | Repeated validator IDs could be passed in batchSendExitRequest |
+| — | Critical | Fixed | BNFT holder could cancel the deposit after processNodeExit is called |
+| — | Critical | Fixed | Malicious users could use the ETH of legitimate users and mint themselves NFTs |
+| — | Critical | Fixed | ETH sent to wrong address on cancellation |
+| — | High | Fixed | Wrong rewards calculation due to numAssociatedValidators |
+| — | Medium | Fixed | The BNFT holder is compared with an incorrect address |
+| — | Medium | Fixed | Queued withdrawals are not claimed by forcePartialWithdraw |
+| — | Medium | Fixed | Deposit cancellation may fail if the etherFiNode version is not updated |
+| — | Low | Fixed | Reward and withdrawal payout getters might fail if the etherFiNode version is not updated |
+| — | Informational | Fixed | Admin could not revert exit request on behalf of LiquidityPool |
+
+## 8. 2024-04-08 — Decurity: PR reviews
+**Artefact oficial:** `2024.04.08 - Decurity.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| PR-28 | Low | Acknowledged | Peg to stETH leads to arbitrage opportunities |
+| PR-28 | Low | Fixed | The admins can sweep tokens from eigenPod |
+| PR-28 | Low | Acknowledged | The admin can sweep the tokens using pancakeSwapForEth |
+| PR-30 | Informational | Not fixed | Outdated comment |
+| PR-28 | Informational | Acknowledged / operational response | Front-running of claimWithdraw possible |
+| PR-28 | Informational | Fixed | Broken back compatibility for cbETH and wbETH |
+
+## 9. 2024-06-25 — Halborn: L2 Governance Token
+**Artefact oficial:** `2024.06.25 - Halborn - L2 Governance Token.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Low | Solved | Two steps ownership |
+| — | Informational | Solved | Attack vector on approve/transferFrom methods |
+| — | Informational | Solved | New opcodes not supported by all chains (Solidity >= 0.8.20) |
+
+## 10. 2024-08-02 — Halborn: EFIP-5 / EFIP-8
+**Artefact oficial:** `2024.08.02 - Halborn - EFIP5 EFIP8.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Informational | Solved | Cache array length outside of loop |
+| — | Informational | Solved | Missing events for blacklist and whitelist operations |
+| — | Informational | Solved | Redundant console import |
+
+## 11. 2024-09-30 — Paladin: OFT Adapter Migration
+**Artefact oficial:** `2024.09.30 - Paladin - OFT Adapter Migration.pdf`
+
+> PDF-ul oficial este prezent în director, dar textul și tabelul de findings nu au putut fi extrase sigur. Secțiunea este păstrată pentru exhaustivitatea inventarului; nu au fost completate titluri din surse secundare.
+
+## 12. 2024-10-08 — Certora: ether.fi draft audit
+**Artefact oficial:** `2024.10.08 - Certora - EtherFi draft.pdf`
+
+> Raport draft: câmpurile de rezoluție sunt în mai multe locuri placeholder-uri de forma Fixed/Not Fixed. Statusul este lăsat „Draft / nespecificat”.
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| H-01 | High | Draft / nespecificat | Unfair payout distribution / DoS in full withdrawal |
+| H-02 | High | Draft / nespecificat | Unfair slashing for finalized withdrawal requests |
+| M-01 | Medium | Draft / nespecificat | DOS batchDeposits by frontrunning with cancelBid |
+| M-02 | Medium | Draft / nespecificat | The contract may not have sufficient ETH to enable canceling bids |
+| M-03 | Medium | Draft / nespecificat | The contract may lose ETH upon upgrade |
+| M-04 | Medium | Draft / nespecificat | Liquifier L1SyncPool couldn’t be set to any address |
+| M-05 | Medium | Draft / nespecificat | EtherFiRewardsRouter Treasury isn’t set to any address |
+| M-06 | Medium | Draft / nespecificat | Whitelist double privilege in AuctionManager.sol |
+| M-07 | Medium | Draft / nespecificat | Swapping EETH for StETH could front-run Liquifier withdrawal request |
+| M-08 | Medium | Draft / nespecificat | StETH deposit consumption rate could be reached by repeated action |
+| M-09 | Medium | Draft / nespecificat | Lack of etherFanEEthShares can lead to executeTasks DOS |
+| M-10 | Medium | Draft / nespecificat | Ether Fan rewards can be forcibly decreased by griefing |
+| M-11 | Medium | Draft / nespecificat | Donation of EETH share can lead to executeTasks DOS |
+| M-12 | Medium | Draft / nespecificat | Whale can grief deposits through permissionless burn |
+| L-01 | Low | Draft / nespecificat | Changing reward splits affect past Stakers and LPs actions |
+| L-02 | Low | Draft / nespecificat | Redundant code block |
+| L-03 | Low | Draft / nespecificat | Whitelist minimum bid amount should not have to be bigger than regular bid amount |
+| L-04 | Low | Draft / nespecificat | Pausable contracts array could have duplicates |
+| L-05 | Low | Draft / nespecificat | Liquifier doesn’t white-list special tokens |
+| I-01 | Informational | Draft / nespecificat | Inconsistent role protection |
+| I-02 | Informational | Draft / nespecificat | Modifier not needed for view function |
+| I-03 | Informational | Draft / nespecificat | Doubled role protection |
+| I-04 | Informational | Draft / nespecificat | Inconsistent revert style |
+| I-05 | Informational | Draft / nespecificat | Confusing function naming |
+| I-06 | Informational | Draft / nespecificat | isFinalized modifier is underutilized |
+| I-07 | Informational | Draft / nespecificat | Unused function |
+| I-08 | Informational | Draft / nespecificat | Redundant if block |
+| I-09 | Informational | Draft / nespecificat | Typos |
+| I-10 | Informational | Draft / nespecificat | Redundant calculation - waste of gas |
+| I-11 | Informational | Draft / nespecificat | Redundant role check in Liquifier |
+| I-12 | Informational | Draft / nespecificat | Redundant variable |
+
+## 13. 2025-01-16 — Certora: eETH share inflation
+**Artefact oficial:** `2025.01.16 - Certora - EETH share inflation.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Nespecificată formal | Fixed / reviewed | Share inflation / share explosion attack via permissionless burnShares |
+
+**Esență:** arderea permissionless a propriilor shares fără reducerea activelor putea crește artificial valoarea unei shares și devenea exploatabilă în integrări externe cu leverage. Raportul notează că remedierea a fost revizuită și că nu erau cunoscute fonduri pierdute.
+
+## 14. 2025-01-23 — Certora: Withdrawal Fee
+**Artefact oficial:** `2025.01.23 - Certora - Withdrawal Fee.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| C-01 | Critical | Fixed | An attacker can take ownership of EtherFiRedemptionManager |
+| C-02 | Critical | Fixed | Stealing funds from users due to silently failing on permits |
+| M-01 | Medium | Fixed | batchCancelDepositByAdmin can be DOSd by the target BNFT Staker |
+| L-01 | Low | Fixed | Use of unsafe transfer/transferFrom |
+| I-01 | Informational | — | Owner can renounce while system is paused |
+| I-02 | Informational | — | Use Ownable2Step.transferOwnership instead of Ownable.transferOwnership |
+| I-03 | Informational | — | Function requestWithdraw() does not need to be payable |
+| I-04a | Informational | — | Typos |
+| I-04b | Informational | — | Duplicate import statements |
+| I-05 | Informational | — | Unused error definition |
+| I-06 | Informational | — | Event is never emitted |
+| I-07 | Informational | — | Event missing indexed field |
+| I-08 | Informational | — | Events that mark critical parameter changes should contain both old and new value |
+| I-09 | Informational | — | Missing Event for critical parameters change |
+| I-10 | Informational | — | Take advantage of Custom Error return value property |
+| I-11 | Informational | — | override function arguments that are unused should have variable name removed/commented |
+| I-12 | Informational | — | public functions not called by contract should be external |
+
+### Constatări invalidate în raport
+| ID | Rezultat | Subiect |
+| --- | --- | --- |
+| Invalid-01 | Invalidated | treasury immutable set to address(0) in deployment scripts |
+| Invalid-02 | Invalidated | Hardcoded 10k gas forwarded |
+
+## 15. 2025-03-26 — Certora: Instant Withdrawal merge into v2.49
+**Artefact oficial:** `2025.03.26 - Certora - Instant Withdrawal Merge into v2.49.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| I-01 | Informational | Fixed | Still writing to the DEPRECATED_admins mapping |
+| I-02 | Informational | Fixed | Unused OwnableUpgradeable Increasing Contract Size and Deployment Gas |
+
+## 16. 2025-03-26 — Certora: v2.49
+**Artefact oficial:** `2025.03.26 - Certora - v2.49.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| H-01 | High | Fixed | Unintentional Removal of _distributePayouts in partialWithdraw() |
+| M-01 | Medium | Fixed | Value sent with LiquidityPool.batchDeposit is lost |
+| I-01 | Informational | Fixed | _sendFunds call can be removed from batchCancelDeposit |
+| I-02 | Informational | Fixed | Outbound amounts are unnecessarily re-calculated |
+| I-03 | Informational | Fixed | executeValidatorManagementTask does not follow CEI pattern |
+| I-04 | Informational | Fixed | setValidatorTaskBatchSize allows setting batch size to zero |
+| I-05 | Informational | Status incomplet în textul extras | Validator tasks can be executed out of order or skipped entirely |
+| I-06 | Informational | Status incomplet în textul extras | Typo in comment |
+
+## 17. 2025-04-12 — Certora: EigenLayer Slashing
+**Artefact oficial:** `2025.04.12 - Certora - EigenLayer Slashing.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| I-01 | Informational | Fixed | Delete rogue console.log imports |
+| I-02 | Informational | Unfixed | Draft Dependencies |
+| I-03 | Informational | Partially fixed | Unused error definition |
+| I-04 | Informational | Partially fixed | Event is never emitted |
+
+## 18. 2025-05-07 — Certora: Cumulative Merkle Distributor
+**Artefact oficial:** `2025.05.07 - Certora - Cumulative Merkle Distributor.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| L-01 | Low | Fixed | CLAIM_DELAY Uses Block Numbers Instead of Time, Causing Inconsistent Delays Across Chains |
+| L-02 | Low | Fixed | lastRewardsCalculatedToBlock May Be In The Future |
+| I-01 | Informational | Fixed | Use More Modern Syntax For Designating Memory-Safe Assembly |
+| I-02 | Informational | Fixed | MerkleRootUpdated Event Is Unused |
+| I-03 | Informational | Fixed | Inconsistent Use of Revert Strings When Custom Errors Are More Prevalent |
+| I-04 | Informational | Fixed | No License Identifier In CumulativeMerkleRewardsDistributor |
+| I-05 | Informational | Fixed | Unchecked Math Operations In Proof Verification |
+
+## 19. 2025-08-01 — Certora: V3.Prelude — Part 1
+**Artefact oficial:** `2025.08.01 - Certora - V3.Prelude - 1.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| C-01 | Critical | Fixed | Missing access control in StakingManager::_authorizeUpgrade allows arbitrary upgrades |
+| M-01 | Medium | Fixed | Incorrect empty tokens array passed to completeQueuedWithdrawal, causing revert |
+| M-02 | Medium | Fixed | Incorrect slashability check in completeQueuedWithdrawals() causes withdrawals to be skipped |
+| M-03 | Medium | Fixed | Incorrect task cleanup in _handleValidators() prevents execution of SendExitRequests tasks |
+| M-04 | Medium | Fixed | CompleteQueuedWithdrawals will revert for a large number of queued withdrawals |
+| L-01 | Low | Fixed | EtherFiNodesManager::createEigenPod() cannot be used outside of initial instantiation flow |
+| I-01 | Informational | Fixed | Lack of EtherFiNode address validation enables arbitrary call forwarding |
+| I-02 | Informational | Fixed | EtherFiNodesManager can be paused, but pausing has no effect |
+| I-03 | Informational | Fixed | EtherFiNode::sweepFunds inaccessible through standard flow |
+| I-04 | Informational | Partially fixed | Inconsistent upgrade authorization in EtherFiNodesManager |
+| I-05 | Informational | Fixed | LegacyStakingManagerState Has Incorrect Length (15 Instead of 14) |
+| I-06 | Informational | Fixed | queueWithdrawal API can be adapted to support more functionality |
+
+## 20. 2025-08-01 — Certora: V3.Prelude — Part 2
+**Artefact oficial:** `2025.08.01 - Certora - V3.Prelude - 2.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| I-01 | Informational | Fixed | Check for 0 balances before emitting events |
+| I-02 | Informational | Acknowledged | Reset pending merkle proofs upon finalization |
+| I-03 | Informational | Acknowledged | Potential storage collision on WeEth contract |
+
+## 21. 2025-09-09 — Certora: Pectra Features Upgrade
+**Artefact oficial:** `2025.09.09 - Certora - Pectra Features Upgrade.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| L-01 | Low | Acknowledged | Incorrect rateLimiter consumption for full exits |
+| L-02 | Low | Acknowledged | Some withdrawals may not be processed, leading to overconsumption of rateLimiter and loss of fees |
+| L-03 | Low | Acknowledged | Fee overpayment will not be returned to caller of requestConsolidation and requestExecutionLayerTriggeredWithdrawal |
+| L-04 | Low | Fixed | setRemaining on bucketLimiter does not cap to capacity |
+| L-05 | Low | Acknowledged | Invalid consolidation requests can be made, leading to loss of fees |
+| L-06 | Low | Fixed | Wrong target address defined in DiscoverCurrentWhitelist script |
+| I-01 | Informational | Acknowledged | Revert on zero address when calling updateConsumer() |
+
+## 22. 2025-10-06 — Certora: Pectra + instant stETH withdrawals + weETH adapter
+**Artefact oficial:** `2025.10.06 - Certora - Pectra stETH weETH.pdf`
+
+### 22.1 Pectra features
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| L-01 | Low | Acknowledged | Incorrect rateLimiter consumption for full exits |
+| L-02 | Low | Acknowledged | Some withdrawals may not be processed, leading to overconsumption of rateLimiter and loss of fees |
+| L-03 | Low | Acknowledged | Fee overpayment will not be returned to caller of requestConsolidation and requestExecutionLayerTriggeredWithdrawal |
+| L-04 | Low | Fixed | setRemaining on bucketLimiter does not cap to capacity |
+| L-05 | Low | Acknowledged | Invalid consolidation requests can be made, leading to loss of fees |
+| L-06 | Low | Fixed | Wrong target address defined in DiscoverCurrentWhitelist script |
+| I-01 | Informational | Acknowledged | Revert on zero address when calling updateConsumer() |
+
+### 22.2 Instant stETH withdrawals
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| H-01 | High | Fixed | Redemptions with stETH will cause reward dilution and permanent locking of rewards |
+| M-01 | Medium | Fixed | Approvals are spent, without being used |
+| L-01 | Low | Fixed | Low watermark threshold not validated properly |
+| L-02 | Low | Acknowledged | canRedeem will return false, even if redemptions are possible |
+| I-01 | Informational | Fixed | Comments are not updated |
+| I-02 | Informational | Acknowledged | Additional sanity check |
+| I-03 | Informational | Acknowledged | Users will earn slightly more by splitting their redemptions |
+| I-04 | Informational | Acknowledged | Attackers may delay normal withdrawals |
+
+### 22.3 weETH withdrawal adapter
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| I-01 | Informational | Acknowledged | Adapter admin role not used |
+| I-02 | Informational | Acknowledged | Validate if the permit amount is sufficient |
+
+## 23. 2025-10-20 — Certora: weETH Withdrawal Adapter
+**Artefact oficial:** `2025.10.20 - Certora - WeETH withdrawal adapter.pdf`
+
+> Raportul standalone reia cele două observații ale secțiunii de adapter din raportul combinat din 6 octombrie 2025.
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| I-01 | Informational | Acknowledged | Adapter admin role not used |
+| I-02 | Informational | Acknowledged | Validate if the permit amount is sufficient |
+
+## 24. 2025-11-12 — Certora: Safe Key Gen / Consolidation Role / Restaker bug fix
+**Artefact oficial:** `2025.11.12 - Certora - Safe Key Gen, Cons. Role, Restaker bugFix.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Low | Fixed | The hash created for registered validator is prone to collision |
+| — | Low | Fixed | The dataRoot might differ between registration and creation phase |
+| — | Informational | — | EL reported shares might be lower than actually withdrawn |
+| — | Informational | — | Calculating pending withdrawals from EigenLayer could be optimized and reduce potential DoS for multiple withdrawals |
+
+Raportul nu listează finding-uri pentru subcomponenta „Role for Consolidating Validators / PR Consolidation”.
+
+## 25. 2026-01-20 — Certora: Liquid Referrer / KING / Cross-Pod Approval
+**Artefact oficial:** `2026.01.20 - Certora - Liquid-Refer,KING,Cross Pod Approval.pdf`
+
+### 25.1 Liquid Referrer
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Informational | Fixed | Deposit does not support native tokens |
+| — | Informational | Fixed | Inconsistency in the initialization call chain |
+| — | Informational | Fixed | Tellers are not whitelisted |
+| — | Informational | Fixed | Pausable functionality not utilized |
+
+### 25.2 Restaking Rewards Router / KING
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Informational | Fixed | Event emissions in receive() lacks info on sender |
+| — | Informational | Acknowledged | Contract should consider more than one reward token being accumulated |
+
+### 25.3 Cross-Pod Approval
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Informational | Fixed | Inconsistent Pubkey Hashing Method Used in Consolidation Rate-Limiting Logic |
+| — | Informational | Acknowledged | totalConsolidationGwei overestimates and can consume much more capacity than actually used |
+
+## 26. 2026-01-29 — Certora: Reaudit Core Contracts
+**Artefact oficial:** `2026.01.29 - Certora - Reaudit Core Contracts.pdf`
+
+> Raportul declară 41 de findings: 8 Medium, 14 Low și 19 Informational. Cuprinsul public extras sare de la I-12 la I-14; anomalia de numerotare este păstrată explicit.
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| M-01 | Medium | Fixed | Incorrect TVL Reporting in Liquifier & Restaker |
+| M-02 | Medium | Fixed | Unbacked Shares Minted due to stETH Transfer Rounding |
+| M-03 | Medium | Acknowledged | Critical State Corruption in setPoints due to V0/V1 Logic Conflict |
+| M-04 | Medium | Acknowledged | Rewards Distribution for New Tiers(V1) could brake |
+| M-05 | Medium | Acknowledged | Incorrect V0 Rewards Calculation during Loss |
+| M-06 | Medium | Acknowledged | Rounding Issue in _withdraw allows value extraction |
+| M-07 | Medium | Acknowledged | Denial of Service in rebase due to Array Length Mismatch |
+| M-08 | Medium | Acknowledged | Griefing Attack on Tier Points Accrual |
+| L-01 | Low | Fixed | Denial of Service in withdrawEther via Donation |
+| L-02 | Low | Fixed | Missing Slashing Accounting in TVL Calculation |
+| L-03 | Low | Fixed | Incorrect Inclusion of Transferred Assets in TVL |
+| L-04 | Low | Acknowledged | Inaccurate TVL for Pending Redemptions due to Slashing |
+| L-05 | Low | Acknowledged | Loss Avoidance during V0 to V1 Migration |
+| L-06 | Low | Acknowledged | Re-initialization Risk in initializeOnUpgrade |
+| L-07 | Low | Acknowledged | Zombie State Creation in claim |
+| L-08 | Low | Acknowledged | rewardsGlobalIndex unnecessarily stored as vaultShares |
+| L-09 | Low | Acknowledged | Broken EAP Calculation for Bronze Tier |
+| L-10 | Low | Acknowledged | Reward index calculation does not factor losses for V0 positions |
+| L-11 | Low | Acknowledged | Hypothetical underflow risk in rebase during slashing events |
+| L-12 | Low | Acknowledged | Protocol Desynchronization via setReportStartSlot |
+| L-13 | Low | Acknowledged | Broken Pausing Mechanism |
+| L-14 | Low | Fixed | Treasury receives less than intended fee amount due to share value inflation after burning staker fee shares |
+| I-01 | Informational | Status individual neconfirmat | Token Registration Bypass via updateWhitelistedToken in Liquifier |
+| I-02 | Informational | Status individual neconfirmat | Missing Events for State Changing Functions in Liquifier |
+| I-03 | Informational | Status individual neconfirmat | Redundant and Broken Token Pause Mechanism |
+| I-04 | Informational | Status individual neconfirmat | Revert in stEthRequestWithdrawal due to Small Remainder |
+| I-05 | Informational | Status individual neconfirmat | Pausing not used inside Restaker |
+| I-06 | Informational | Status individual neconfirmat | Unused code |
+| I-07 | Informational | Status individual neconfirmat | Discrepancy in totalRedeemableAmount() Calculation |
+| I-08 | Informational | Status individual neconfirmat | Reentrancy in wrapEthForEap can manipulate emitted event values |
+| I-09 | Informational | Status individual neconfirmat | Unfair Dilution in _topUpDeposit |
+| I-10 | Informational | Status individual neconfirmat | Unused Parameter in deposit function |
+| I-11 | Informational | Status individual neconfirmat | Redundant State Variable and Function |
+| I-12 | Informational | Status individual neconfirmat | Mismatch in EigenPod_validatorPubkeyHashToInfo Implementation |
+| I-13 | Informational | Lipsește din numerotarea extrasă | Finding declarat în totalul raportului, dar titlul I-13 nu apare în cuprinsul extras |
+| I-14 | Informational | Status individual neconfirmat | Missing Sanity Check in _handleAccruedRewards |
+| I-15 | Informational | Status individual neconfirmat | Unused State Variable in MembershipManager |
+| I-16 | Informational | Status individual neconfirmat | Redundant Boolean Equation Check |
+| I-17 | Informational | Status individual neconfirmat | Incorrect Burn Amount Reported in Event Due to amountForShare Mismatch |
+| I-18 | Informational | Status individual neconfirmat | Broken domain separator caching in proxy pattern |
+| I-19 | Informational | Status individual neconfirmat | Deposit Cap inconsistency in Liquifier Contract |
+
+## 27. 2026-03-05 — Certora: Priority Withdrawal Queue
+**Artefact oficial:** `2026.03.05 - Certora - Priority Queue.pdf`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| H-01 | High | Fixed | Incorrect Share Accounting in _cancelWithdrawRequest Breaks Protocol Solvency |
+| H-02 | High | Fixed | Accounting Mismatch in ethAmountLockedForPriorityWithdrawal Due to Share Price Fluctuations |
+| M-01 | Medium | Fixed | PriorityWithdrawalQueue Ignores Liquidity Pool Withdrawal Locks |
+| M-02 | Medium | Fixed | Remainder Shares Are Not Tracked in Cancelled Requests |
+| L-01 | Low | Fixed | Incorrect Event Argument in RemainderHandled |
+| L-02 | Low | Fixed | Non-Idempotent CREATE2 Deploy Can DoS Deployment Script |
+| L-03 | Low | Fixed | requestWithdrawWithPermit Can Be Griefed via Permit Frontrun |
+| I-01 | Informational | Fixed | Rounding Loss in Treasury Split Calculation |
+| I-02 | Informational | Acknowledged | Asymmetric Withdrawal Value Logic for Users |
+| I-03 | Informational | Fixed | Unused OwnableUpgradeable Inheritance |
+| I-04 | Informational | Fixed | Inaccurate NatSpec in invalidateRequests |
+| I-05 | Informational | Fixed | Batch Claim Bypasses User Balance Check |
+| I-06 | Informational | Fixed | Potential Gas Griefing in claimWithdraw |
+| I-07 | Informational | Acknowledged | Unused Return Values in Internal Functions |
+| I-08 | Informational | Fixed | Deployment/Upgrade Scripts Print Inaccurate Logs |
+| I-09 | Informational | Acknowledged | Priority Queue Scripts Contain Unresolved TODOs and Placeholders |
+| I-10 | Informational | Acknowledged | Finalized Request Cancellation Creates Remainder-Bypass Optionality |
+| I-11 | Informational | Acknowledged | WithdrawRequestNFT Lock Accounting Can Retain Unconsumed ethAmountLockedForWithdrawal |
+
+## 28. 2026-06-28 — Certora: 26Q2 Security Upgrade
+**Artefact oficial:** `2026.06.28 - Certora - 26Q2 Security Upgrade.pdf`
+
+> Artefactul oficial de 701 KB este public în repository, iar ether.fi confirmă că upgrade-ul din 2026 a fost auditat de Certora. PDF-ul nu a putut fi convertit/extras în mediul curent, astfel că titlurile individuale nu sunt reproduse pentru a evita informații inventate.
+
+## 29. — — Nethermind: NM-0217 Deposit Adapter
+**Artefact oficial:** `NM-0217 Deposit Adapter.md`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Low | — | stETH 1 wei corner case not accounted (two transfers → amount - 2 wei) |
+| — | Informational | — | Ether sent directly into contract will be stuck |
+| — | Informational | — | Ignoring result of permit function call |
+
+## 30. — — Nethermind: NM-0217 Restaking stETH
+**Artefact oficial:** `NM-0217 Restaking stETH.md`
+
+| ID | Severitate | Status | Finding |
+| --- | --- | --- | --- |
+| — | Best Practice | Fixed | Lack of access control in undelegate |
+| — | Best Practice | Fixed | Typo getEthAmountInEigenLayerPnedingForWithdrawals |
+
+## Observații finale privind acoperirea
+
+1. Toate cele 30 de artefacte din directorul oficial sunt reprezentate în document.
+2. Indexul conține toate titlurile de finding care au putut fi identificate sigur din conținutul public extras.
+3. Nu au fost inventate titluri pentru CertiK 2023, Paladin 2024 sau Certora 26Q2 2026; limitarea este marcată în secțiunile respective.
+4. Rapoartele pot conține suplimentar comentarii de scope, rezultate de formal verification, recomandări generale și observații invalidate care nu sunt vulnerabilități. Unde au fost clar etichetate, acestea au fost separate.
+
+---
+
+**Sursă primară:** pagina de audituri ether.fi și directorul `audits/` din repository-ul oficial `etherfi-protocol/smart-contracts`.

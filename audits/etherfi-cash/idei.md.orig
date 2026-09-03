@@ -1,0 +1,47 @@
+1. poti opri setarea unui nou owner consumand nonce-ul inainte ca currentowner sa fie apelat? gpt spune ca nu a gasit un flow, pare un lead mancat dar poate are ceva mai mult daca fac un deep dive in el fara gpt ❔✅
+2. CashLens e folosit in operatiile de lichidare si altele, nu e un simplu user view. Posibil sa existe niste probleme legate de cross contract accounting? imi trebui ceva de genul `contract 1 -> CashLens -> contract 2`
+3. Accounting shared intre safe-uri pentru acelasi modul. Daca un safe poate sa faca ceva rau intr-un modul toate celelalte pot fi afectate?
+4. In CashModuleCore exista un preliquidate, pare ca blocheaza pending withdrawals in cazul in care o pozitie devine lichidabila, posibile buguri aici de value extraction 
+5. In CashModuleCore::_spendCredit am un try and catch care presupune automat ca revertul e din cauza unui old withdrawl, pot sa am si alte cazuri?  oricum try and catch merita verificat
+6. pot sa fac bypass la dailiy limit prin ceva replay de semnaturi sau scheme?
+7. un lead bun, poti face spend credit in timpul opt out delay
+8. poate cashbackul sa imi creasca liquidation thresholdul
+9. any enabled EtherFi module that can be induced to make a user-controlled call could call the Spoke from the Safe. Because msg.sender would then be the Safe, Aave would authorize it automatically.
+10. OpenOceanSwapModule.swap() is not marked nonReentrant, while OpenOcean routes can execute arbitrary callback calls. The executor could therefore call back into public EtherFi module entry points during the swap.
+11. se intampla ceva intre request bridge si execute bridge in modulul de wormhole?
+12. in data provider ce se intampla daca modific modulul/ il scot din whitelist
+13. probleme la lichidare + tranzitie de la legacy la lendgateway?
+
+
+
+
+
+
+
+
+## idea de asynchron operation + rounding intre finalizare si incepere similara ostium
+| Priority | Async flow | Conversion | Main state-gap concern |
+|---|---|---|---|
+| High | Midas redemption | Midas shares → output asset | No local `minReturn`, deadline, request ID, or completion tracking |
+| High | Boring Queue withdrawal | Vault shares → assets using rate and discount | Amount is rounded down and shares leave the Safe; EtherFi exposes no queue cancellation wrapper |
+| Medium | Across/Enso delayed swaps | Source token → destination token | Quote/calldata becomes stale while other operations can alter balances and Aave health |
+| Medium | Stargate/OFT bridging | Local decimals → shared decimals | Dust truncation and slippage rounding can leave residual tokens |
+| Medium | Pending cashback | Stored USD → token at future price | Floor rounding can turn small pending cashback into zero and delete it |
+| Low | Lend opt-out | Aave supplied shares → assets | Uses live balances, but borrowing during the delay can block completion |
+| Low | Cash delayed withdrawal | Aave shares → exact loose token amount | Conversion happens when requested, not when completed |
+
+## wormhole bridge
+1. Source transfer succeeds:
+   Safe tokens leave source chain
+   ↓
+   privileged NTT config change makes message permanently/non-temporarily
+   unredeemable on destination
+   ↓
+   is there an NTT-standard recovery/refund path?
+
+2. Transfer is inbound queued:
+   ↓
+   Wormhole exposes completeInboundQueuedTransfer(...)
+   or equivalent
+   ↓
+   can the EtherFi Safe owner / anyone call it directly?

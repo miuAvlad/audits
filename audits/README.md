@@ -1,0 +1,1 @@
+These are independent research projects or audit contests where I provided more than just the findings

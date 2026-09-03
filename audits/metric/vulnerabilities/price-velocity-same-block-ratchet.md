@@ -1,0 +1,251 @@
+# Mutable same-block baseline lets swaps exceed the configured per-block price cap by 10.85x
+
+## Severity
+
+**Medium**
+
+`PriceVelocityGuardExtension` is intended to cap how far a pool's oracle price may move between blocks. However, every successful swap replaces the reference midpoint used by the next swap. An attacker can split a movement that the extension rejects into individually permitted steps and execute all of them in one block.
+
+With a configured cap of 10 bps per block, the PoC produces:
+
+```text 
+direct 18.0081 bps movement:                reverted
+2 sequential movements of 9 bps each:      accepted
+direct 108.5362 bps movement:               reverted
+12 sequential movements of 9 bps each:     accepted
+cumulative movement accepted in one block: 108.5362 bps
+effective configured-cap bypass:            10.85x
+```
+
+This defeats the extension's central security guarantee. Only two genuine observations are needed to produce a strict violation; twelve quantify practical amplification. The cumulative movement is bounded by observation availability and transaction gas, rather than by `maxChangePerBlockE18`. Because the updates and swaps can be bundled atomically, the pool admin cannot intervene before they execute. Calling `setLastMidPrice` afterward cannot undo the accepted movement or completed swaps.
+
+High is not claimed because an unconditional loss above the High threshold has not been established. The demonstrated impact is a permissionless bypass of a first-party safety mechanism under a normal nonzero configuration.
+
+## Summary
+
+For every swap, the extension compares the current oracle midpoint against the midpoint stored by the immediately preceding successful swap. If the transition passes, it stores that midpoint and `block.number` as the next reference.
+
+For another swap in the same block, `blockDiff == 0`. The formula nevertheless grants one complete cap because it uses `1 + blockDiff`. Once a movement just below the cap succeeds, the moved price becomes the baseline for another complete allowance in that same block.
+
+Path decomposition therefore controls acceptance:
+
+- a direct transition from `P0` to `P12` reverts;
+- transitions from `P0` through `P1 ... P12` all succeed;
+- both paths have the same final price;
+- all twelve accepted steps execute without advancing `block.number`.
+
+The observations need not be forged, stale, or incorrect. A separate PoC demonstrates that Metric's actual Pyth ingestion accepts twelve correctly signed, strictly newer observations separated by 50 milliseconds in one EVM block.
+
+## Root cause
+
+`beforeSwap` loads the preceding swap's checkpoint and then unconditionally replaces it:
+
+```solidity
+uint128 prevMid = s.lastMidPriceX64;
+uint64 prevBlock = s.lastUpdateBlock;
+
+s.lastMidPriceX64 = midPrice;
+s.lastUpdateBlock = uint64(block.number);
+```
+
+The allowance is calculated against that mutable checkpoint:
+
+```solidity
+uint256 blockDiff = block.number - prevBlock;
+uint256 delta = midPrice > prevMid
+  ? uint256(midPrice - prevMid)
+  : uint256(prevMid - midPrice);
+uint256 changeE18 = (delta * 1e18) / uint256(prevMid);
+
+uint256 actualSq = changeE18 * changeE18;
+uint256 allowedSq =
+  uint256(maxChange) * uint256(maxChange) * (1 + blockDiff);
+
+if (actualSq > allowedSq) revert PriceVelocityExceeded(actualSq, allowedSq);
+```
+
+For each later swap in the block:
+
+```text
+blockDiff = 0
+allowed movement = maxChange * sqrt(1 + 0) = maxChange
+```
+
+The code consequently enforces a repeatable per-transition cap, despite its explicit per-block semantics:
+
+- the field is named `maxChangePerBlockE18`;
+- the setter is named `setMaxChangePerBlock`;
+- the NatSpec says it caps movement "between blocks";
+- the allowance is based on `block.number` and `blockDiff`.
+
+A per-block limit requires a fixed comparison baseline throughout the block. Updating it after every swap turns the configured allowance into a repeatable allowance.
+
+## Why the configured unit is per block
+
+The scoped implementation is explicit about the unit of the limit:
+
+- storage is named `maxChangePerBlockE18`;
+- the admin entry point is `setMaxChangePerBlock`;
+- contract NatSpec says the extension caps movement "between blocks";
+- elapsed allowance is derived from `block.number - lastUpdateBlock`.
+
+The contest README also uses the high-level phrase "per-swap drift cap." This identifies the swap callback as the enforcement point; it does not define checkpoint renewal or say that each swap receives a fresh allowance. The consistent reading is that the guard executes per swap while enforcing movement measured in block units.
+
+The prior [Zellic assessment](https://ams3.digitaloceanspaces.com/sherlock-files/additional_resources/Metric%20OMM%20-%20Zellic%20Audit%20Report%20Draft.pdf) independently describes this callback as verifying that the midpoint's "rate of change across blocks" stays below the configured ceiling. It also calls the parameter `maxChangePerBlockE18`.
+
+The per-block semantics are therefore not inferred from wording alone. They are encoded in the state names, setter, NatSpec, and elapsed-block formula, and independently reflected in the prior assessment. The three-word README shorthand does not establish that same-block checkpoint ratcheting is intended.
+
+## Mathematics
+
+Let `c` be the configured cap and let each accepted same-block step move by `r`, where `0 < r < c`. After `N` steps:
+
+```text
+P_N = P_0 * (1 + r)^N
+cumulative movement = (1 + r)^N - 1
+```
+
+The PoC uses:
+
+```text
+c = 0.001       = 10 bps
+r = 0.0009      = 9 bps
+N = 12
+
+(1.0009)^12 - 1 = 1.085362% = 108.5362 bps
+108.5362 bps / 10 bps = 10.85362x
+```
+
+The minimal counterexample needs only two observations: `(1.0009)^2 - 1 = 0.180081% = 18.0081 bps`. A 10-token exact-output swap at the direct 18.0081 bps transition reverts, while normal 10-token swaps succeed through both 9 bps transitions in the same block.
+
+The direct transition fails because 108.5362 bps exceeds 10 bps. The decomposed path succeeds because each adjacent transition is only 9 bps. No aggregate per-block check exists. Increasing `N` increases the bypass multiplier, subject to signed-observation availability and gas.
+
+## Permissionless attack path
+
+1. A pool enables `PriceVelocityGuardExtension` with a meaningful nonzero cap.
+2. The attacker obtains genuine, correctly signed, monotonically newer Pyth observations whose adjacent movements are below the cap but whose cumulative movement exceeds it.
+3. The attacker relays those reports to `PythOracle`; the on-chain push path does not require the oracle admin, pool admin, or Pyth signer to be the caller.
+4. A helper interleaves each oracle update with a small pool swap.
+5. Every swap passes against the midpoint committed by the preceding swap.
+6. Every success advances the midpoint baseline and grants the next observation another complete allowance.
+7. The final price and associated swaps are accepted in one block, although submitting that same final price directly would revert.
+
+No malicious oracle, stale value, privileged role, or pool-admin mistake is required.
+
+## Impact
+
+The primary impact is the permissionless and atomic defeat of the configured price-velocity protection:
+
+- the same final price is rejected directly but accepted through intermediate observations;
+- the two-observation control uses normal 10-token swaps, proving the bypass is not dependent on tiny-amount rounding;
+- the accepted movement exceeds the configured cap by 10.85x in the bounded PoC;
+- using small checkpoint swaps is optional but reduces the twelve-step path's cost to `0.000012076467398187` token1 in the 1:1 PoC even with a 5 bps notional fee;
+- the bypass multiplier grows with the number of steps;
+- swaps execute beyond the price movement the pool admin configured as safe;
+- the admin cannot intervene within the atomic sequence or reverse completed swaps afterward.
+
+This is not merely a documentation discrepancy. Limiting price velocity is the extension's only security function, and the implementation permits prohibited cumulative movement solely based on how that movement is partitioned.
+
+This report does not rely on the known oracle-shock plus two-leg cycle loss identified in `contest-known-issues.pdf`.
+
+## Secondary impact
+
+The mutable checkpoint can also cause a temporary swap outage when the price reverses after the ratchet. In the PoC, a 1.085362% outward movement followed by a return to the starting price needs approximately 115 blocks of natural recovery because the correct returned price is compared against the ratcheted baseline.
+
+This is supporting impact, not the Medium severity basis. The pool admin can call `setLastMidPrice` immediately once the condition is detected. That can restore operation, but it cannot prevent or undo the atomic cap bypass that already occurred.
+
+An unchanged-price dust swap can likewise advance `lastUpdateBlock` without changing the midpoint, erasing accumulated elapsed-block allowance and temporarily rejecting a later distinct price. This further shows that swap activity, rather than a stable block or price baseline, controls the guard.
+
+## Pyth reachability
+
+Metric's Pyth path verifies the Pyth Lazer signature, extracts the signed `FeedUpdateTimestamp`, and stores only strictly newer observations. Millisecond timestamps permit multiple valid observations in one EVM block.
+
+The strengthened Pyth PoC uses Metric's `PythOracle`, the actual `PythLazer.verifyUpdate` path with the local trusted test signer, production `AnchoredPriceProvider`, and the attributed pool-to-provider-to-oracle read flow. Pyth officially supports a [`fixed_rate@50ms`](https://docs.pyth.network/price-feeds/pro/subscribe-to-prices) channel. It demonstrates that an unprivileged relayer can submit twelve signed observations at that cadence and expose each one to a pool:
+
+- are accepted in one EVM block;
+- are submitted by an address with no protocol or oracle role;
+- remain within the same provider freshness second;
+- pass through an immutable provider configured with a 1 bps margin, 100 bps spread ceiling, and 60-second freshness bound;
+- move less than 10 bps between every adjacent provider midpoint;
+- move the provider-visible midpoint by `108.5359` bps cumulatively.
+
+Twelve signed updates plus provider reads consume approximately `519,614` gas; twelve real pool swaps consume approximately `565,522` gas. The separately measured paths total about `1.09 million` gas, comfortably below ordinary EVM block gas limits.
+
+## Proofs of concept
+
+Pool and extension state-machine PoC:
+
+[PriceVelocitySameBlockRatchet.audit.t.sol](../metric-periphery/test/extensions/PriceVelocitySameBlockRatchet.audit.t.sol)
+
+```bash
+cd metric-periphery
+forge test --offline \
+  -R 'smart-contracts-poc/=../smart-contracts-poc/' \
+  --match-path test/extensions/PriceVelocitySameBlockRatchet.audit.t.sol \
+  --skip ProviderOwnershipStaleUpdaterPoolPoC -vv
+```
+
+Relevant tests:
+
+- `test_directCumulativeMoveReverts`
+- `test_twoObservationsAreEnoughToViolateThePerBlockCap`
+- `test_sameBlockIntermediateUpdatesBypassThePerBlockCap`
+- `test_priceReversalIsBlockedForQuadraticallyManyBlocks`
+- `test_samePriceDustSwapResetsClockAndBlocksFreshPrice`
+
+### Pool PoC result interpretation
+
+The extension is configured with `maxChangePerBlockE18 = 1e15`, which is
+`0.1%`, or `10 bps`.
+
+- The direct transition from the initial midpoint to the twelve-step final
+  midpoint is `108.5362 bps` and correctly reverts.
+- Two consecutive `9 bps` observations both pass because each successful
+  10-token swap replaces the comparison baseline. Their cumulative movement is
+  `18.0081 bps`, so the minimal sequence accepts `1.80081x` the configured cap.
+- Twelve consecutive `9 bps` observations accept a cumulative
+  `108.5362 bps` movement in one block, bypassing the configured cap by
+  `10.85362x`. The twelve checkpoint swaps cost approximately
+  `0.000012076467398187` token1 including the configured `5 bps` notional fee.
+- After the twelve-step ratchet, a correct reversal is blocked until the block
+  difference reaches approximately `115`.
+- An unchanged-price swap can reset `lastUpdateBlock` after 99 elapsed blocks
+  and force a normally permitted `1%` movement to wait another 99 blocks.
+
+Real Pyth verification PoC:
+
+[PythOracleSequentialSameBlock.audit.t.sol](../smart-contracts-poc/test/oracles/PythOracleSequentialSameBlock.audit.t.sol)
+
+```bash
+cd smart-contracts-poc
+forge test --match-path test/oracles/PythOracleSequentialSameBlock.audit.t.sol -vv
+```
+
+Relevant Pyth tests:
+
+- `test_verifiedSequentialObservationsCanAllLandInOneBlock`
+- `test_permissionlessSignedUpdatesReachTheProviderAtEveryRatchetStep`
+
+### Pyth PoC result interpretation
+
+The test submits twelve correctly encoded and signed observations with strictly
+increasing timestamps at a `50 ms` cadence without advancing `block.number`.
+Every adjacent provider-visible movement remains below the configured `10 bps`
+cap, while the final provider midpoint is approximately `108.5359 bps` above
+the initial midpoint. This proves that the real Pyth-to-provider integration can
+expose enough sequential observations to reproduce the `10.85x` state-machine
+bypass. The caller submitting the reports is an unprivileged relayer.
+
+## Recommendation
+
+Use an immutable comparison baseline for every EVM block. Every observation accepted during one block must be checked against the same block-opening midpoint, not the preceding swap's midpoint.
+
+Track the fixed block baseline separately from the latest accepted midpoint. Rotate the baseline once when processing the first swap in a later block, then leave it unchanged for the rest of that block.
+
+Additionally, do not advance the elapsed-time checkpoint for an unchanged midpoint.
+
+Add invariants asserting that:
+
+1. no sequence of swaps in one block can move the accepted midpoint farther than the configured cap from the block-opening midpoint;
+2. intermediate observations cannot make a final quote executable when the direct final quote would revert;
+3. a same-price swap cannot reduce the allowance available to the next distinct observation;
+4. a round trip from `P0` to `PN` and back cannot block `P0` solely because intermediate swaps moved the checkpoint.

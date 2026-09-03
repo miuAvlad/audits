@@ -1,0 +1,222 @@
+{
+  "chain": "Scroll",
+  "rpc": "https://rpc.scroll.io",
+  "explorerLogIndex": "https://scrollscan.com",
+  "canonicalEthereumLogIndex": "https://eth.blockscout.com",
+  "method": "update->Unpaused heuristic, independently proven with archive accountantState calls",
+  "assets": [
+    {
+      "asset": "liquidETH",
+      "accountant": "0x0d05D94a5F1E76C18fbeB7A13d17C8a314088198",
+      "indexedRelevantLogCount": 429,
+      "automaticPauses": [
+        {
+          "asset": "liquidETH",
+          "accountant": "0x0d05D94a5F1E76C18fbeB7A13d17C8a314088198",
+          "block": 14052291,
+          "timestamp": "2025-03-16T02:51:21.000000Z",
+          "transactionHash": "0xd162170404874cf5d5b4be9c5e7cc5a052a548d42ce79f69202acc7ec9390ef2",
+          "oldRate": 100000000,
+          "pausedRate": 1048974799398492415,
+          "eventTimestamp": 1742093481,
+          "allowedExchangeRateChangeUpper": 10050,
+          "allowedExchangeRateChangeLower": 9950,
+          "minimumUpdateDelayInSeconds": 21600,
+          "previousUpdateTimestamp": 1737047407,
+          "trigger": "upper-bound violation",
+          "thresholds": {
+            "upperLimit": 100500000,
+            "lowerLimit": 99500000,
+            "delayDeadline": 1737069007
+          },
+          "unpauseBlock": 14052360,
+          "unpauseTimestamp": "2025-03-16T02:58:14.000000Z",
+          "unpauseTransactionHash": "0xcddf84db9b1e719f6c48823ce7a259127ad8b9e7061e7bdb9d5c002a7a5604b8",
+          "firstSubsequentUpdate": {
+            "block": 14089776,
+            "timestamp": "2025-03-18T05:59:14.000000Z",
+            "transactionHash": "0xded361fdb01b2b54bb9b92a3d740b261d1d35c9f9253e86fde20b8c8200c5426",
+            "oldRate": 1048974799398492415,
+            "newRate": 1048974799398492415,
+            "eventTimestamp": 1742277554
+          },
+          "matchingCanonicalEthereumUpdate": {
+            "block": 22055639,
+            "timestamp": "2025-03-15T23:43:11.000000Z",
+            "transactionHash": "0x5d1a3aaaea647d5d276b0115c4ab76ad00d03549975b6c2c9550d26da638d9d1",
+            "oldRate": 1048915581681286461,
+            "newRate": 1048974799398492415,
+            "eventTimestamp": 1742082191,
+            "secondsBeforeScrollUpdate": 11290
+          },
+          "archiveProof": {
+            "beforePaused": false,
+            "afterPaused": true,
+            "afterStoredRate": 1048974799398492415
+          }
+        }
+      ],
+      "rejectedHeuristicCandidates": []
+    },
+    {
+      "asset": "liquidBTC",
+      "accountant": "0xEa23aC6D7D11f6b181d6B98174D334478ADAe6b0",
+      "indexedRelevantLogCount": 438,
+      "automaticPauses": [
+        {
+          "asset": "liquidBTC",
+          "accountant": "0xEa23aC6D7D11f6b181d6B98174D334478ADAe6b0",
+          "block": 14107745,
+          "timestamp": "2025-03-19T06:57:44.000000Z",
+          "transactionHash": "0xd2ab8b61e2d92a6e693f1c06c87a614a537a962065180e7d59eca99e73633234",
+          "oldRate": 100000000,
+          "pausedRate": 101423242,
+          "eventTimestamp": 1742367464,
+          "allowedExchangeRateChangeUpper": 10050,
+          "allowedExchangeRateChangeLower": 9950,
+          "minimumUpdateDelayInSeconds": 21600,
+          "previousUpdateTimestamp": 1741631578,
+          "trigger": "upper-bound violation",
+          "thresholds": {
+            "upperLimit": 100500000,
+            "lowerLimit": 99500000,
+            "delayDeadline": 1741653178
+          },
+          "unpauseBlock": 14107746,
+          "unpauseTimestamp": "2025-03-19T06:57:58.000000Z",
+          "unpauseTransactionHash": "0xdda5cb8d5fc0843d2edea69dc294824161fd7092da118fa1aecd93297e810cce",
+          "firstSubsequentUpdate": {
+            "block": 14119709,
+            "timestamp": "2025-03-19T22:56:03.000000Z",
+            "transactionHash": "0xb97c978ea56ea501d4ac3a058387335341b403581a1180a032e04665b486874c",
+            "oldRate": 101423242,
+            "newRate": 101424750,
+            "eventTimestamp": 1742424963
+          },
+          "matchingCanonicalEthereumUpdate": {
+            "block": 22076365,
+            "timestamp": "2025-03-18T21:12:35.000000Z",
+            "transactionHash": "0x12e5e4e35c6a14d03982e4a8556b0c79820e63adda93c3c46aa05e28694076b3",
+            "oldRate": 101417847,
+            "newRate": 101423242,
+            "eventTimestamp": 1742332355,
+            "secondsBeforeScrollUpdate": 35109
+          },
+          "archiveProof": {
+            "beforePaused": false,
+            "afterPaused": true,
+            "afterStoredRate": 101423242
+          }
+        }
+      ],
+      "rejectedHeuristicCandidates": []
+    },
+    {
+      "asset": "liquidUSD",
+      "accountant": "0xc315D6e14DDCDC7407784e2Caf815d131Bc1D3E7",
+      "indexedRelevantLogCount": 462,
+      "automaticPauses": [
+        {
+          "asset": "liquidUSD",
+          "accountant": "0xc315D6e14DDCDC7407784e2Caf815d131Bc1D3E7",
+          "block": 14090187,
+          "timestamp": "2025-03-18T06:31:03.000000Z",
+          "transactionHash": "0x7bbc644478b9d85d1aa1941f3b6023298d3de26dc558f98568dbbc34a3cb6310",
+          "oldRate": 1063549,
+          "pausedRate": 1085269,
+          "eventTimestamp": 1742279463,
+          "allowedExchangeRateChangeUpper": 10050,
+          "allowedExchangeRateChangeLower": 9950,
+          "minimumUpdateDelayInSeconds": 21600,
+          "previousUpdateTimestamp": 1737048621,
+          "trigger": "upper-bound violation",
+          "thresholds": {
+            "upperLimit": 1068866,
+            "lowerLimit": 1058231,
+            "delayDeadline": 1737070221
+          },
+          "unpauseBlock": 14090193,
+          "unpauseTimestamp": "2025-03-18T06:32:03.000000Z",
+          "unpauseTransactionHash": "0x8663cf3f653163a25dfb4464f5659f3384214744ebd5f6378a2f7683aa266372",
+          "firstSubsequentUpdate": {
+            "block": 14101973,
+            "timestamp": "2025-03-18T20:58:53.000000Z",
+            "transactionHash": "0xc82080b4edc4897bcbec553c0d48af024f1225488d4d1b1f46866ae5c7f1f572",
+            "oldRate": 1085269,
+            "newRate": 1085380,
+            "eventTimestamp": 1742331533
+          },
+          "matchingCanonicalEthereumUpdate": {
+            "block": 22070037,
+            "timestamp": "2025-03-17T23:58:35.000000Z",
+            "transactionHash": "0x5dbb8670c966406dbd4c794c9e76a9a5a1da37c57118aa2cc75375c67fb2df07",
+            "oldRate": 1085249,
+            "newRate": 1085269,
+            "eventTimestamp": 1742255915,
+            "secondsBeforeScrollUpdate": 23548
+          },
+          "archiveProof": {
+            "beforePaused": false,
+            "afterPaused": true,
+            "afterStoredRate": 1085269
+          }
+        }
+      ],
+      "rejectedHeuristicCandidates": []
+    },
+    {
+      "asset": "eUSD",
+      "accountant": "0xEB440B36f61Bf62E0C54C622944545f159C3B790",
+      "indexedRelevantLogCount": 491,
+      "automaticPauses": [
+        {
+          "asset": "eUSD",
+          "accountant": "0xEB440B36f61Bf62E0C54C622944545f159C3B790",
+          "block": 14108040,
+          "timestamp": "2025-03-19T07:18:44.000000Z",
+          "transactionHash": "0x92689556e9a61872799fd338131d6393a8623c33f328fbc9e381bd8228c88692",
+          "oldRate": 1032917217867783877,
+          "pausedRate": 1045066585449073893,
+          "eventTimestamp": 1742368724,
+          "allowedExchangeRateChangeUpper": 10050,
+          "allowedExchangeRateChangeLower": 9950,
+          "minimumUpdateDelayInSeconds": 21600,
+          "previousUpdateTimestamp": 1737140523,
+          "trigger": "upper-bound violation",
+          "thresholds": {
+            "upperLimit": 1038081803957122796,
+            "lowerLimit": 1027752631778444957,
+            "delayDeadline": 1737162123
+          },
+          "unpauseBlock": 14108043,
+          "unpauseTimestamp": "2025-03-19T07:18:55.000000Z",
+          "unpauseTransactionHash": "0x6aba67e5b574fd754704ac57ead33991e6bbde777dfe894e513ff108481a66fa",
+          "firstSubsequentUpdate": {
+            "block": 14119651,
+            "timestamp": "2025-03-19T22:51:25.000000Z",
+            "transactionHash": "0x2eb8728b1d8f5b50c353186de4966237b4b4c424b7880c58bdedaab66074cc58",
+            "oldRate": 1045066585449073893,
+            "newRate": 1045171147887171908,
+            "eventTimestamp": 1742424685
+          },
+          "matchingCanonicalEthereumUpdate": {
+            "block": 22076334,
+            "timestamp": "2025-03-18T21:06:23.000000Z",
+            "transactionHash": "0x47bf407349a46ea0efbed9b42b823be4e1e1b50d44db0b1d11a03ac9ee267262",
+            "oldRate": 1044981371187451701,
+            "newRate": 1045066585449073893,
+            "eventTimestamp": 1742331983,
+            "secondsBeforeScrollUpdate": 36741
+          },
+          "archiveProof": {
+            "beforePaused": false,
+            "afterPaused": true,
+            "afterStoredRate": 1045066585449073893
+          }
+        }
+      ],
+      "rejectedHeuristicCandidates": []
+    }
+  ],
+  "automaticPauseCount": 4
+}

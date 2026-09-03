@@ -1,0 +1,21 @@
+testMode: property
+testLimit: 100000
+seqLen: 12
+shrinkLimit: 5000
+seed: 2182026
+
+# External-token campaign only. Real CashModule/Safe/Aave operations live in the Foundry invariant.
+# Lifecycle setup/recovery remains callable so Echidna can create and shrink a live reservation.
+filterBlacklist: false
+filterFunctions:
+  - "PendingWithdrawalCoverageEchidna.requestWithdrawal(uint96)"
+  - "PendingWithdrawalCoverageEchidna.increaseSafeBalance(uint96)"
+  - "PendingWithdrawalCoverageEchidna.processWithdrawal()"
+  - "PendingWithdrawalCoverageEchidna.cancelWithdrawal()"
+  - "PendingWithdrawalCoverageEchidna.standardFeeOnTransfer(uint96,uint16)"
+  - "PendingWithdrawalCoverageEchidna.senderExtraFeeTransfer(uint96,uint16)"
+  - "PendingWithdrawalCoverageEchidna.migrateTokenBalance()"
+  - "PendingWithdrawalCoverageEchidna.privilegedBurn(uint96)"
+
+# negativeRebase(uint96) remains implemented but excluded. Any strict-coverage counterexample
+# must therefore come from a different external-token semantic.
