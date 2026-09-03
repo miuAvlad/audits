@@ -18,15 +18,15 @@ My contest record currently includes **13 confirmed findings: 6 High and 7 Mediu
 The public entries below are listed on my
 [Sherlock Watson profile](https://audits.sherlock.xyz/watson/taticuvostru), which aggregates results
 from Sherlock, Cantina, and Code4rena. The three Revert Finance findings were confirmed through
-Cantina, but direct report links are currently unavailable.
+Cantina across two competitions, but direct report links are currently unavailable.
 
 | Contest | Place | Severity | Finding |
 | --- | ---: | :---: | --- |
 | [Metric](https://audits.sherlock.xyz/contests/1279) | #25 | Medium | [Users can bypass velocity extension cap using multiple valid Pyth observations](https://audits.sherlock.xyz/contests/1279/voting/2716) |
 | [Metric](https://audits.sherlock.xyz/contests/1279) | #25 | Medium | [Eight-decimal oracle normalization can make the pool trade below a fresh signed price](https://audits.sherlock.xyz/contests/1279/voting/2743) |
-| [Revert Finance](https://cantina.xyz/competitions/efb6f308-f13b-4110-aff8-0d67181608dd) | #14 | High | Confirmed finding; direct report link unavailable |
 | [Revert Finance](https://cantina.xyz/competitions/efb6f308-f13b-4110-aff8-0d67181608dd) | #14 | Medium | Confirmed finding; direct report link unavailable |
-| [Revert Finance](https://cantina.xyz/competitions/efb6f308-f13b-4110-aff8-0d67181608dd) | #14 | Medium | Confirmed finding; direct report link unavailable |
+| [Revert Finance — StableSwap Hooks](https://cantina.xyz/code/e55ee7b9-6c99-42f8-8338-39f3dd134ef3/overview) | — | High | Confirmed finding; direct report link unavailable |
+| [Revert Finance — StableSwap Hooks](https://cantina.xyz/code/e55ee7b9-6c99-42f8-8338-39f3dd134ef3/overview) | — | Medium | Confirmed finding; direct report link unavailable |
 | [Super DCA Liquidity Network](https://audits.sherlock.xyz/contests/1171) | #52 | High | [Reward Accrual DoS and donation sniping through stake/unstake timing](https://audits.sherlock.xyz/contests/1171/voting/661) |
 | [GTE Perps and Launchpad](https://code4rena.com/audits/2025-08-gte-perps-and-launchpad) | #13 | High | [Reward shares can reach zero after unlocking and brick `GTELaunchpadV2Pair`](https://code4rena.com/audits/2025-08-gte-perps-and-launchpad/submissions/S-644) |
 | [GTE Perps and Launchpad](https://code4rena.com/audits/2025-08-gte-perps-and-launchpad) | #13 | High | [Computed CREATE2 pair address differs from the pair deployed by the factory](https://code4rena.com/audits/2025-08-gte-perps-and-launchpad/submissions/S-646) |
