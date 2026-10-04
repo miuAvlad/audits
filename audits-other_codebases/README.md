@@ -1,2 +1,13 @@
-Starting my vulnerability research on more complex codebases with libreswan.
-I publish my findings after the patches hit the main branch. For now the number of findings confirmed by the team is 3.
+# Vulnerability Research
+
+I am expanding my vulnerability research to more complex codebases, starting with **Libreswan**.
+
+## Disclosure Policy
+
+Findings are published after the corresponding patches have been merged into the main branch.
+
+## Current Status
+
+| Project | Confirmed Findings |
+| --- | ---: |
+| Libreswan | 3 |
