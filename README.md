@@ -27,17 +27,6 @@ Over the coming months, I will gradually publish my Libreswan findings.
 | [Smart contracts](audits-smart_contracts/README.md) | Audit-contest findings and independent research covering DeFi protocols, accounting, authorization, bridges, oracles, and protocol invariants. |
 | [Other codebases](audits-other_codebases/README.md) | Research into infrastructure and systems software, including C/C++ codebases such as Libreswan. |
 
-## Published Systems Research
-
-### Libreswan
-
-| Finding | Impact | Status |
-| --- | --- | --- |
-| [Pre-authentication use-after-free in IPSECKEY DNS cleanup](audits-other_codebases/libreswan/IPSECKEY_DNS_UAF_REPORT.md) | Remote denial of service against Pluto on affected configurations | [Reported upstream](https://github.com/libreswan/libreswan/issues/3071) and [fixed on `main`](https://github.com/libreswan/libreswan/commit/b04c3a27f7a047260d8fa99c460cc49f345da9c6) |
-
-Additional reports will be published after coordinated disclosure and after
-the corresponding fixes are publicly available.
-
 ## Repository Layout
 
 ```text
@@ -77,8 +66,3 @@ and its remediation are public or disclosure has otherwise been authorized.
 
 AI-assisted tools are used for tasks such as code navigation, call-flow
 analysis, hypothesis generation, test-environment work, and drafting.
-
-## Public Audit Profile
-
-Public smart-contract contest results are available on my
-[Sherlock Watson profile](https://audits.sherlock.xyz/watson/taticuvostru).
