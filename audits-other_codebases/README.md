@@ -11,6 +11,13 @@ I have not yet decided if I should include the full reproduction scripts.
 
 ## Current Status
 
-| Project | Confirmed Findings | published |
-| --- | --- | --- |
-| Libreswan | 3 | 1 |
+| Project | Confirmed Findings | Published | CVEs |
+| --- | ---: | ---: | --- |
+| Libreswan | 3 | 2 | [CVE-2026-94453](https://libreswan.org/security/CVE-2026-94453/) |
+
+## Published Reports
+
+- [CVE-2026-94453: Remote use-after-free in an IKE-over-TCP endpoint](libreswan/IKE_OVER_TCP_ENDPOINT_UAF_CVE-2026-94453.md) — [official Libreswan advisory](https://libreswan.org/security/CVE-2026-94453/)
+- [Pre-authentication use-after-free in IPSECKEY DNS cleanup](libreswan/IPSECKEY_DNS_UAF_REPORT.md) — [upstream issue #3071](https://github.com/libreswan/libreswan/issues/3071)
+
+
