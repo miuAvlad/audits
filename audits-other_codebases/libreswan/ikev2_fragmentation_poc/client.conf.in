@@ -1,0 +1,23 @@
+version 2.0
+
+config setup
+	logfile=/tmp/ikev2-fragment-client.log
+	logappend=no
+	plutodebug=all
+	dumpdir=/tmp
+
+conn fragment-retention-poc
+	keyexchange=ikev2
+	authby=secret
+	ike=aes256-sha2_256;modp2048
+	esp=aes256-sha2_256
+	fragmentation=yes
+	left=@@INITIATOR_IP@@
+	leftid=@fragment-poc-initiator
+	leftsubnet=@@INITIATOR_IP@@/32
+	right=@@RESPONDER_IP@@
+	rightid=@fragment-poc-responder
+	rightsubnet=@@RESPONDER_IP@@/32
+	retransmit-timeout=1s
+	auto=add
+

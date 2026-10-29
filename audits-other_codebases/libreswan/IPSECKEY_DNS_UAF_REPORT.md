@@ -11,15 +11,16 @@
 
 ## Summary
 
+An IKEv2 responder configured with `rightrsasigkey=%dnsondemand` and
+`dns-match-id=yes` performs an IPSECKEY lookup for the initiator key and an
+A-record lookup to verify that the FQDN identity resolves to the IKE source
+address.
 
-IKEv2 with `rightrsasigkey=%dnsondemand` and `dns-match-id=yes` forces pluto to perform two DNS queries:
-1. IPSECKEY for the initiator public key
-2. an A-record lookup to check if the FQDN identity resolves the IKE source address
-
-When A record is provided syncronously from libunbound's cache and does not match the initiator address it returns DNS_FATAL.
-Two possible scenarios can occur that may cause an UAF and crash the Pluto daemon.
-- first request is pending while A callback frees the `ike->sa.ipseckey_dnsr` due to initiator address not corresponding to the FQDN address, later the trigger is the `ret_a != DNS_SUSPEND && ret_a != DNS_OK` branch which tries to dealocate the local pointer `dnsr_idi`.
-- first request is resolved after `dns_qry_start(dnsr_idi)` with DNS_OK which frees the memory from the local pointer `dnsr_idi`, the later A callback returning DNS_FATAL triggers the `ret_a != DNS_SUSPEND && ret_a != DNS_OK` branch which tries to dealocate `dnsr_idi` again.
+When libunbound returns a cached A record synchronously and that address does
+not match the initiator, the callback can free the IPSECKEY request while
+`responder_fetch_idi_ipseckey()` still retains a local pointer to it. The
+caller then follows its error cleanup path and dereferences or frees the stale
+pointer a second time, terminating Pluto.
 
 
 ## Security impact
@@ -32,7 +33,8 @@ configuration. The demonstrated impact is denial of service.
 - Confirmed affected runtime: `libreswan-5.3.2-2.fc44.x86_64`
 - Source checkout analyzed: `v5.4-346-gb49d6bcaeb`
 - Exact first affected version: `v3.25`
-- Exact last affected version: `[TO BE DETERMINED]`
+- Fixed on `main` by commit
+  [b04c3a27f7a047260d8fa99c460cc49f345da9c6](https://github.com/libreswan/libreswan/commit/b04c3a27f7a047260d8fa99c460cc49f345da9c6)
 
 
 ## Required configuration and attack preconditions
@@ -63,10 +65,10 @@ struct p_dns_req *dnsr_idi = ipseckey_qry_st_init(...);
 ret_idi = dns_qry_start(dnsr_idi);
 ```
 
-### Firs case
+### First case
 
-For a synchronous callback in which the DNS returns DNS_OK, `dns_qry_start()` frees the request before
-returning:
+For a synchronous callback in which DNS returns `DNS_OK`, `dns_qry_start()`
+frees the request before returning:
 
 ```c
 ret = dnsr->dns_status;
@@ -103,7 +105,9 @@ Therefore the second cleanup immediately dereferences freed memory.
 
 ### Second case
 
-When dns_qry_start(dnsr_idi) returns DNS_SUSPEND, the IPSECKEY request is still pending, so the caller stores its pointer in `ike->sa.ipseckey_dnsr`for later callback handling.
+When `dns_qry_start(dnsr_idi)` returns `DNS_SUSPEND`, the IPSECKEY request is
+still pending, so the caller stores its pointer in `ike->sa.ipseckey_dnsr` for
+later callback handling.
 
 ```c
 ret_idi = dns_qry_start(dnsr_idi);
@@ -117,7 +121,9 @@ ret_idi = dns_qry_start(dnsr_idi);
 	}
 ```
 
-If the `A` lookup return address does not match the IKE source IP `idi_a_fetch_continue()` frees the memory from `ike->sa.ipseckey_dnsr`.
+If the address returned by the `A` lookup does not match the IKE source IP,
+`idi_a_fetch_continue()` frees the request through
+`ike->sa.ipseckey_dnsr`.
 
 ```c
 if (ike->sa.st_connection->config->dns_match_id) {
@@ -157,8 +163,9 @@ if (ret_a != DNS_SUSPEND && ret_a != DNS_OK) {
 
 ## Attack flow
 
-The attack path nees 2 conections, one for prewarming the cache of libunbound and one for the actual trigger.
-Each negotiation creates its own DNS request objects, but both A requests ask the same logical DNS question:
+The attack path needs two connections: one to warm libunbound's cache and one
+for the actual trigger. Each negotiation creates its own DNS request objects,
+but both `A` requests ask the same logical DNS question:
 
 QNAME  = attacker.uaf2-poc.net.
 QTYPE  = A
@@ -195,7 +202,8 @@ Remote initiator                         Vulnerable Pluto responder
 
 ## Proof of concept
 
-The attached `UAF_2` directory contains the complete two-VM reproducer:
+The complete two-VM reproducer is available in
+[`ipsec_dns_poc/`](ipsec_dns_poc/README.md):
 
 - `uaf2_prepare_responder.sh` — configures the vulnerable responder;
 - `uaf2_prepare_initiator.sh` — configures the initiator and authoritative DNS;
@@ -205,33 +213,28 @@ The attached `UAF_2` directory contains the complete two-VM reproducer:
 
 The lab DNS zone is unsigned, so the reproducer enables allow_dns_insecure to let Pluto process its responses. This impairment is specific to the lab, not a requirement of the vulnerable code path. A properly signed attacker-controlled domain could provide DNSSEC-validated IPSECKEY and A records, including an A record that does not match the initiator’s IKE source address.
 
-### Test topology
-
-```text
-VM1 / vulnerable responder: 192.168.122.31
-VM2 / initiator and DNS:     192.168.122.160
-```
-
 ### Reproduction
 
-Prepare VM2:
+Set the actual isolated VM addresses, then prepare the initiator/DNS VM:
 
 ```bash
-sudo /tmp/uaf2/uaf2_prepare_initiator.sh /tmp/uaf2
+INITIATOR_IP=192.0.2.20
+RESPONDER_IP=192.0.2.10
+sudo ./uaf2_prepare_initiator.sh "$INITIATOR_IP" "$RESPONDER_IP"
 ```
 
-Prepare VM1 and record its PID:
+Prepare the responder and record its PID:
 
 ```bash
-sudo /tmp/uaf2/uaf2_prepare_responder.sh /tmp/uaf2
+sudo ./uaf2_prepare_responder.sh "$RESPONDER_IP" "$INITIATOR_IP"
 PID_BEFORE=$(pgrep -xo pluto)
 echo "PID before: ${PID_BEFORE}"
 ```
 
-Run the trigger on VM2:
+Run the trigger on the initiator:
 
 ```bash
-sudo /tmp/uaf2/uaf2_trigger.sh 2
+sudo DNS_SERVER=127.0.0.1 ./uaf2_trigger.sh 2
 ```
 
 Check VM1:
@@ -283,12 +286,7 @@ Test both IPSECKEY outcomes (`DNS_SUSPEND` and synchronous `DNS_OK`) with
 a synchronous, mismatching A response.
 
 
-## Attachments
+## Reproducer files
 
-- `uaf2_prepare_responder.sh`
-- `uaf2_prepare_initiator.sh`
-- `uaf2_trigger.sh`
-- `uaf2_responder.conf.in`
-- `uaf2_initiator.conf.in`
-- `uaf2_named.conf`
-- `uaf2-poc.net.zone.in`
+The scripts, templates, safety notes, and restoration procedure are documented
+in [`ipsec_dns_poc/README.md`](ipsec_dns_poc/README.md).

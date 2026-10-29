@@ -1,0 +1,31 @@
+# VM1 / vulnerable responder.
+# The lab enables insecure DNS answers at runtime using:
+#   ipsec whack --impair allow_dns_insecure
+# Production reachability instead requires DNSSEC-valid IPSECKEY/A answers.
+
+version 2.0
+
+config setup
+	logfile=/tmp/pluto-uaf2.log
+	logtime=no
+	logappend=no
+	plutodebug=all
+	dumpdir=/tmp
+	dnssec-enable=no
+
+conn uaf2-ipseckey
+	ikev2=insist
+	type=tunnel
+	left=@@RESPONDER_IP@@
+	leftid=%null
+	leftauth=null
+	right=@@INITIATOR_IP@@
+	rightid=@attacker.uaf2-poc.net
+	rightauth=rsasig
+	rightrsasigkey=%dnsondemand
+	@@DNS_MATCH_KEYWORD@@=yes
+	retransmit-timeout=10s
+	auto=add
+
+# Deliberately no PSK or responder private key is needed: the responder uses
+# NULL authentication, while the initiator declares RSASIG.

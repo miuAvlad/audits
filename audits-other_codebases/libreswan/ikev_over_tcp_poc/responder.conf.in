@@ -1,0 +1,25 @@
+version 2.0
+
+config setup
+	logfile=/tmp/pluto-ike-tcp-uaf.log
+	logtime=no
+	logappend=no
+	plutodebug=all
+	dumpdir=/tmp
+	listen-tcp=yes
+	listen-udp=no
+	ddos-mode=unlimited
+
+conn ike-tcp-uaf
+	keyexchange=ikev2
+	authby=secret
+	ike=aes256-sha2_256;modp2048
+	left=@@RESPONDER_IP@@
+	leftid=@responder
+	right=@@INITIATOR_IP@@
+	rightid=@initiator
+	retransmit-timeout=10s
+	auto=add
+
+# The reproducer stops before authentication, so no PSK is required.
+

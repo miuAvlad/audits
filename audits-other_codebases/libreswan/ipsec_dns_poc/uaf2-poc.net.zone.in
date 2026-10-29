@@ -1,0 +1,18 @@
+$ORIGIN uaf2-poc.net.
+$TTL 300
+
+@ IN SOA ns.uaf2-poc.net. hostmaster.uaf2-poc.net. (
+	1    ; serial
+	60   ; refresh
+	60   ; retry
+	3600 ; expire
+	60   ; negative TTL
+)
+
+@        IN NS ns.uaf2-poc.net.
+ns       IN A  @@DNS_IP@@
+
+; Deliberate mismatch: this documentation-only address is not the IKE source.
+attacker IN A  192.0.2.123
+attacker IN IPSECKEY @@IPSECKEY_RDATA@@
+

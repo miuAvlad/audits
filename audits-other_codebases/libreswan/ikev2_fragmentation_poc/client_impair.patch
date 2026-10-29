@@ -1,0 +1,153 @@
+diff --git a/include/impair.h b/include/impair.h
+index a9a7f31f78..d2647b63b6 100644
+--- a/include/impair.h
++++ b/include/impair.h
+@@ -222,6 +222,7 @@ struct impair {
+ 	struct impair_unsigned v2_proposal_protoid;
+ 
+ 	struct impair_unsigned helper_thread_delay;
++	struct impair_unsigned v2_incomplete_fragments;
+ 
+ 	bool install_ipsec_sa_inbound_state;
+ 	bool install_ipsec_sa_inbound_policy;
+diff --git a/lib/libswan/impair.c b/lib/libswan/impair.c
+index 058bc1ddbe..aabfc7eba1 100644
+--- a/lib/libswan/impair.c
++++ b/lib/libswan/impair.c
+@@ -406,6 +406,7 @@ struct impairment impairments[] = {
+ 	U(v2_proposal_protoid, "corrupt the IKEv2 proposal substructure protocol ID"),
+ 
+ 	U(helper_thread_delay, "pause <unsigned> seconds before starting each helper thread job; 0 will MS warp the delay"),
++	U(v2_incomplete_fragments, "TEST ONLY: force a new IKE SA and send 31 of 32 protected fragments, each with <unsigned> cleartext bytes"),
+ 
+ 	B(install_ipsec_sa_inbound_state, "error after installing the inbound IPsec SA state (but before policy)"),
+ 	B(install_ipsec_sa_inbound_policy, "error after installing the inbound IPsec SA policy (and state)"),
+diff --git a/programs/pluto/ikev2_message.c b/programs/pluto/ikev2_message.c
+index e7daaff0f2..a4c02d7ee1 100644
+--- a/programs/pluto/ikev2_message.c
++++ b/programs/pluto/ikev2_message.c
+@@ -1314,7 +1314,7 @@ static bool encrypt_and_record_outbound_fragment(struct logger *logger,
+ 						 unsigned int number)
+ {
+-	struct fragment_pbs_out message_fragment;
+-	if (!open_fragment_pbs_out("fragment", &message_fragment, logger)) {
++	struct large_pbs_out message_fragment;
++	if (!open_large_pbs_out("fragment", &message_fragment, logger)) {
+ 		return false;
+ 	}
+ 
+@@ -1500,7 +1500,9 @@ static bool encrypt_and_record_outbound_fragments(shunk_t message,
+ 	 * unencrypted payloads.
+ 	 */
+ 	PASSERT(logger, unencrypted_payloads.len < max_skf_size);
+-	unsigned int nfrags = (sk->cleartext.len + unencrypted_payloads.len + max_skf_size - 1) / max_skf_size;
++	unsigned int nfrags = (impair.v2_incomplete_fragments.enabled
++			       ? MAX_IKE_FRAGMENTS
++			       : (sk->cleartext.len + unencrypted_payloads.len + max_skf_size - 1) / max_skf_size);
+ 
+ 	if (nfrags > MAX_IKE_FRAGMENTS) {
+ 		llog(RC_LOG, sk->logger,
+@@ -1554,6 +1556,48 @@ static bool encrypt_and_record_outbound_fragments(shunk_t message,
+ 	 */
+ 	enum next_payload_types_ikev2 skf_np = fixup_value(sk->logger, &sk->sk_next_payload_field);
+ 
++	/*
++	 * Test-only reproducer for incomplete-fragment resource retention.
++	 * Build 31 independently protected, near-maximum-size fragments while
++	 * advertising a total of 32.  Entry 32 remains empty and is deliberately
++	 * skipped by send_recorded_v2_message().  Since reassembly never occurs,
++	 * the filler does not need to contain a parseable inner IKE_AUTH message.
++	 */
++	if (impair.v2_incomplete_fragments.enabled) {
++		size_t filler_len = impair.v2_incomplete_fragments.value;
++		if (filler_len == 0 || filler_len > 65000) {
++			llog(RC_LOG, logger,
++			     "v2_incomplete_fragments must be between 1 and 65000 bytes");
++			return false;
++		}
++
++		chunk_t filler = alloc_chunk(filler_len, "incomplete SKF test filler");
++		memset(filler.ptr, 0x33, filler.len);
++		llog(IMPAIR_STREAM, logger,
++		     "building 31 of 32 protected IKEv2 fragments with %zu cleartext bytes each",
++		     filler_len);
++
++		for (unsigned int number = 1; number < MAX_IKE_FRAGMENTS; number++) {
++			if (!encrypt_and_record_outbound_fragment(sk->logger, sk->ike,
++							  &hdr,
++							  unencrypted_payloads_type,
++							  unencrypted_payloads,
++							  previous_to_sk_next_payload_offset,
++							  skf_np,
++							  (*fragments),
++							  HUNK_AS_SHUNK(&filler),
++							  number)) {
++				free_chunk_content(&filler);
++				return false;
++			}
++			skf_np = ISAKMP_NEXT_v2NONE;
++			unencrypted_payloads = null_shunk;
++		}
++
++		free_chunk_content(&filler);
++		return true;
++	}
++
+ 	unsigned int number = 1;
+ 	shunk_t clear_cursor = HUNK_AS_SHUNK(&sk->cleartext);
+ 
+@@ -1655,7 +1699,8 @@ static stf_status encrypt_and_record_v2SK_message(shunk_t message,
+ 	/* IPv4 and IPv6 have different fragment sizes */
+ 	if (sk->ike->sa.st_iface_endpoint->io->protocol == &ip_protocol_udp &&
+ 	    sk->ike->sa.st_v2_ike_fragmentation_enabled &&
+-	    len >= endpoint_info(sk->ike->sa.st_remote_endpoint)->ikev2_max_fragment_size) {
++	    (impair.v2_incomplete_fragments.enabled ||
++	     len >= endpoint_info(sk->ike->sa.st_remote_endpoint)->ikev2_max_fragment_size)) {
+ 		if (!encrypt_and_record_outbound_fragments(message, sk, outgoing_fragments, story)) {
+ 			ldbg(sk->logger, "record outbound fragments failed");
+ 			return STF_INTERNAL_ERROR;
+diff --git a/programs/pluto/ikev2_send.c b/programs/pluto/ikev2_send.c
+index 9323e148ac..ba5503f6d4 100644
+--- a/programs/pluto/ikev2_send.c
++++ b/programs/pluto/ikev2_send.c
+@@ -42,6 +42,7 @@
+ #include "kernel.h"	/* for get_my_cpi() */
+ #include "log_limiter.h"
+ #include "ikev2_notification.h"
++#include "impair.h"
+ 
+ #ifdef USE_XFRM_INTERFACE
+ #include "kernel_xfrm_interface.h"	/* for set_ike_mark_out() */
+@@ -68,6 +69,12 @@ bool send_recorded_v2_message(struct ike_sa *ike,
+ 	unsigned nr_frags = 0;
+ 	TABLE_FOR_EACH(frag, frags) {
+ 		nr_frags++;
++		if (impair.v2_incomplete_fragments.enabled && frag->len == 0) {
++			llog(IMPAIR_STREAM, ike->sa.logger,
++			     "omitting protected IKEv2 fragment %u of %u",
++			     nr_frags, frags->len);
++			continue;
++		}
+ 		if (!send_hunk_using_state(&ike->sa, frags->story, frag)) {
+ 			ldbg(ike->sa.logger, "send of %s fragment %u failed",
+ 			     frags->story, nr_frags);
+diff --git a/programs/pluto/initiate.c b/programs/pluto/initiate.c
+index 1a46eaaa66..7048e8584b 100644
+--- a/programs/pluto/initiate.c
++++ b/programs/pluto/initiate.c
+@@ -348,8 +348,14 @@ void initiate(struct connection *c,
+ 	/*
+ 	 * Force a new IKE SA by ignoring viable parent?
+ 	 */
+-	if (ike != NULL && impair.ignore_viable_parent) {
++	if (ike != NULL &&
++	    (impair.ignore_viable_parent ||
++	     impair.v2_incomplete_fragments.enabled)) {
++		if (impair.v2_incomplete_fragments.enabled) {
++			llog(IMPAIR_STREAM, logger,
++			     "fragment queue test: forcing a distinct IKE SA");
++		}
+ 		state_buf sb;
+ 		llog(IMPAIR_STREAM, logger, "ignoring viable %s "PRI_STATE,
+ 		     ike->sa.st_connection->config->ike_info->parent_sa_name,
+ 		     pri_state(&ike->sa, &sb));
