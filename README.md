@@ -1,68 +1,23 @@
-# Security Research and Audits
+# Security Research & Audit Portfolio
 
+I review smart contracts and systems software, trace failures across component boundaries, and build reproducible proof of concepts. My public work includes **13 confirmed contest findings (6 High, 7 Medium)** and **three Libreswan vulnerability reports**, including a [vendor-published CVE](https://libreswan.org/security/CVE-2026-94453/).
 
-This repository contains my security research work acros different types of codebases.
-For the moment there are multiple smart contracts findings and a clear explanaiton of 
-my vulnerability research process only for this type of projects. The methodology used 
-for my other code reviews is mainly the same. 
+## Start here
 
-I am particularly interested in complex vulnerabilities, this is one of the reason I 
-started to hunt for vulnerabilities in projects with a higher complexity making a transition
-from blockchain protocols to regular system software (not a one way transition, I am still going
-to hunt for bugs in smart contracts too). This transition was made easy due to AI
-which helps me understand the codebases and new arhitectures easily. 
+| Work | Evidence | What it shows |
+| --- | --- | --- |
+| [Smart contract audit results](audits-smart_contracts/README.md) | [Sherlock Watson profile](https://audits.sherlock.xyz/watson/taticuvostru) · public contest submissions | Accounting, access control, oracle, order-book, and denial-of-service findings across DeFi protocols. |
+| [Libreswan: IKE-over-TCP use-after-free](audits-other_codebases/libreswan/IKE_OVER_TCP_ENDPOINT_UAF_CVE-2026-94453.md) | [CVE-2026-94453 advisory](https://libreswan.org/security/CVE-2026-94453/) · [PoC](audits-other_codebases/libreswan/ikev_over_tcp_poc/README.md) | Remote, unauthenticated crash of the Pluto IKE daemon; fixed in Libreswan 5.3.3 and 5.4.1. |
+| [Libreswan: IPSECKEY DNS use-after-free](audits-other_codebases/libreswan/IPSECKEY_DNS_UAF_REPORT.md) | [Upstream fix](https://github.com/libreswan/libreswan/commit/b04c3a27f7a047260d8fa99c460cc49f345da9c6) · [PoC](audits-other_codebases/libreswan/ipsec_dns_poc/README.md) | Pre-authentication crash in DNS callback cleanup under the documented configuration. |
+| [Libreswan: IKEv2 fragment retention](audits-other_codebases/libreswan/IKE_v2_fragmentation.md) | [Upstream issue](https://github.com/libreswan/libreswan/issues/3079) · [bounded PoC](audits-other_codebases/libreswan/ikev2_fragmentation_poc/README.md) | Resource retention in incomplete fragment queues, with impact and test limitations documented. |
 
-Most of my work is code review and exploit development. In my next months I am planning 
-to start a vulnerability research targeting a proprietary software using binary analysis tools
-such as ghidra, gdb. I will also use my own tool for visualizing memory. This tool was created
-entirely with AI based on the features I want and it still needs a lot of improvements.
+## Explore the work
 
-Over the coming months, I will gradually publish my Libreswan findings.
+- [Smart contracts](audits-smart_contracts/README.md): confirmed contest results, selected technical reports, and research artifacts from EtherFi, EtherFi Cash, and Metric.
+- [Systems software](audits-other_codebases/README.md): public Libreswan reports, reproductions, and upstream references.
 
+## How I investigate
 
-## Research Areas
+I map entry points and trust boundaries, trace shared state across flows, derive security invariants from code, and test attack hypotheses with focused reproductions, fuzzing, or invariant tests. Each report separates observed behavior from assumptions about reachability, impact, and disclosure status.
 
-| Area | Description |
-| --- | --- |
-| [Smart contracts](audits-smart_contracts/README.md) | Audit-contest findings and independent research covering DeFi protocols, accounting, authorization, bridges, oracles, and protocol invariants. |
-| [Other codebases](audits-other_codebases/README.md) | Research into infrastructure and systems software, including C/C++ codebases such as Libreswan. |
-
-## Repository Layout
-
-```text
-audits-smart_contracts/
-    README.md                 Smart-contract research overview and results
-    findings/                 Public findings and contest reports
-    etherfi/                  EtherFi research, notes, scripts, and PoCs
-    etherfi-cash/             EtherFi Cash research and reproductions
-    metric/                   Metric research, findings, and tests
-
-audits-other_codebases/
-    README.md                 Systems-research overview
-    libreswan/                Public Libreswan vulnerability reports
-```
-
-## Research Approach
-
-My workflow generally consists of:
-
-1. mapping architecture, entry points, and trust boundaries;
-2. tracing interactions between flows that share state;
-3. extracting assumptions and security invariants from the implementation;
-4. developing concrete attack hypotheses;
-5. testing reachability with targeted scripts, fuzzing, invariant tests, or
-   isolated reproducer environments;
-6. evaluating realistic impact, preconditions, and possible mitigations.
-
-Early notes and candidate findings may be incomplete, speculative, or written
-partly in Romanian. Final reports should be read together with their stated
-preconditions, threat model, and impact analysis.
-
-## Disclosure and AI Use
-
-Potential vulnerabilities in actively maintained software are reported to the
-relevant maintainers before publication. Reports are published after the issue
-and its remediation are public or disclosure has otherwise been authorized.
-
-AI-assisted tools are used for tasks such as code navigation, call-flow
-analysis, hypothesis generation, test-environment work, and drafting.
+I use AI-assisted tools for navigation, hypothesis generation, and test scaffolding. I verify conclusions against source code and executable evidence.
